@@ -2,7 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const logger = require('./middleware/logger')
 const connectDB = require('./config/db')
-
+const cookieParser = require('cookie-parser')
 
 
 
@@ -16,6 +16,7 @@ connectDB();
 // Route files
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+const { countDocuments } = require('./models/User')
 
 
 const app = express();
@@ -23,12 +24,13 @@ const app = express();
 // Body parser
 app.use(express.json())
 
-
+// Cookie Parser
+app.use(cookieParser())
 
 app.use(logger)
 
 // Mount routers
-app.use('/', users);
+app.use('/', users)
 app.use('/', auth);
 
 

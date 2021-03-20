@@ -3,12 +3,11 @@ const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 
 // Sign JWT and return
-const getSignedJwtToken = id => {
+/*const getSignedJwtToken = id => {
     return jwt.sign({id},process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE
     })
-}
-
+}*/
 
 
 // Create User
@@ -24,9 +23,8 @@ exports.register = async (req, res, next) => {
        email,
        password
    })
-   // Create token
-   const token = getSignedJwtToken(user._id);
-   res.status(200).json({ success: true, token})
+ 
+   sendTokenResponse(user, 200, res)
 }
 
 // Login User
@@ -53,7 +51,32 @@ exports.login = async (req, res, next) => {
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
-    res.status(200).json({ success: true})
+   sendTokenResponse(user, 200, res)
+   
   
   
+ }
+
+ // Get token from model, create cookie and send response
+ const sendTokenResponse = (user,statusCode, res) => {
+
+  // Create token
+  const token = user.getSignedJwtToken()
+  
+  const options = {
+      httpOnly: true
+
+  }
+  if(process.env.NODE_ENV === 'production'){
+    options.secure = true
+  }
+
+  res
+    .status(statusCode)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token
+    })
+
  }
