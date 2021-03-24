@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true,'Please add a password']
     }
-   
+    
 })
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
@@ -45,4 +45,17 @@ UserSchema.methods.getSignedJwtToken = function () {
     })
    
   };
+
+UserSchema.methods.getId = function() {
+    return this._id
+}
+
+
+UserSchema.methods.getDate = function() {
+    return this.date
+}
+
+
+
+
 module.exports = mongoose.model('User', UserSchema);

@@ -13,10 +13,15 @@ dotenv.config({ path: './config/config.env' });
 // Connect to database
 connectDB();
 
+
+
+
+
 // Route files
 const users = require('./routes/users');
 const auth = require('./routes/auth');
-const { countDocuments } = require('./models/User')
+const login = require('./routes/login')
+
 
 
 const app = express();
@@ -29,9 +34,19 @@ app.use(cookieParser())
 
 app.use(logger)
 
+
+
+
+
+
 // Mount routers
-app.use('/', users)
+app.use('/users', users)
+app.use('/users',login)
 app.use('/', auth);
+
+
+
+
 
 
 
