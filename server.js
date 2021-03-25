@@ -21,6 +21,7 @@ connectDB();
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const login = require('./routes/login')
+const point = require('./routes/point')
 
 
 
@@ -41,7 +42,8 @@ app.use(logger)
 
 // Mount routers
 app.use('/users', users)
-app.use('/users',login)
+app.use('/logins',login)
+app.use('/points',point)
 app.use('/', auth);
 
 

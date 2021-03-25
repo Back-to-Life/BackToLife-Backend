@@ -11,12 +11,13 @@ const {
 } = require('../controllers/users')
 
 const loginRouter = require("./login")
+const pointRouter = require("./point")
 
 
 const router = express.Router();
 
 router.use('/:id/lastLoginUpdate',loginRouter)
-
+router.use('/points', pointRouter)
 router
       .route('/')
       .get(getUsers)
