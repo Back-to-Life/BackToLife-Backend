@@ -3,13 +3,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
         required: [true, 'Please add a fistname']
-    },
-    lastName: {
-        type: String,
-        required: [true,'Please add a lastName']
     },
     email: {
         type: String,
@@ -50,12 +46,15 @@ UserSchema.methods.getId = function() {
     return this._id
 }
 
+UserSchema.methods.deleteToken = function(token, cb){
+    var user = this;
 
-UserSchema.methods.getDate = function() {
-    return this.date
+    user.update({$unset: {token: 1}}, function(err,user){
+        if(err) return cb(err);
+        cb(null, user);
+
+})
 }
-
-
 
 
 module.exports = mongoose.model('User', UserSchema);

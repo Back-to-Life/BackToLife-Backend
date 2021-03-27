@@ -8,23 +8,23 @@ const LoginDate = require('../models/LoginDate')
 // POST
   
 exports.register = async (req, res, next) => {
-   const { firstName, lastName, email, password } = req.body;
+   const { name, email, password } = req.body;
    
    // Create User
    const user = await User.create({
-       firstName,
-       lastName,
+       name,
        email,
        password
    })
  
   
 
-   const token = user.getSignedJwtToken();
+   /*const token = user.getSignedJwtToken();
 
    const id = user.getId();
 
-   res.status(200).json({success: true, token, id})
+   res.status(200).json({success: true, token, id})*/
+   sendTokenResponse(user, 200, res);
    
 
 }
@@ -56,18 +56,64 @@ exports.login = async (req, res, next) => {
   }
 
 
-  const token = user.getSignedJwtToken();
+  /*const token = user.getSignedJwtToken();
 
   const id = user.getId();
 
-  let date = user.getDate()
-
+ 
 
  
 
-  res.status(200).json({success: true, token, id, date})
-   
+  res.status(200).json({success: true, token, id})
+   */
+  const id = user.getId();
+  sendTokenResponse(user, 200, res, id);
   
   
  }
 
+ exports.logout = async (req, res, next) => {
+  res.cookie('token', 'none', {
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+};
+
+
+
+exports.getMe = async (req, res, next) => {
+  // user is already available in req due to the protect middleware
+  const user = req.user;
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
+
+
+const sendTokenResponse = (user, statusCode, res, id) => {
+  // Create token
+  const token = user.getSignedJwtToken();
+
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  res.status(statusCode).cookie('token', token, options).json({
+    success: true,
+    token,
+    id
+  });
+};

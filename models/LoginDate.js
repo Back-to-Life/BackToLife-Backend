@@ -18,10 +18,6 @@ const LoginDateSchema = new mongoose.Schema({
 
 })
 
-LoginDateSchema.methods.getCounter = async function() {
-    
-    return this.loginCounter+1
-}
 
 
 module.exports = mongoose.model('LoginDate', LoginDateSchema);
