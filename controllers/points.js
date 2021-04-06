@@ -1,82 +1,44 @@
 const Point = require('../models/Points')
+const ErrorResponse = require('../utils/errorResponse');
+const LoginDate = require('../models/LoginDate')
 
 
-
-// GET
-exports.getPoints = async (req, res, next) => {
-   try{
-       const points = await Point.find();
-       res.status(200).json({success: true, data: points })
-
-   }catch(err){
-       res.status(400).json({success: false})
-
-   }
-}
 // GET  
 exports.getPoint = async (req, res, next) => {
-   try {
-       const point = await Point.findById(req.params.id);
-
-       res.status(200).json({success: true, data: point})
-   } catch (err) {
-    res.status(400).json({success: false});
-       
-   }
-}
-
-
-// POST
-
-exports.createPoint = async (req, res, next) => {
-  try{
-      const point = await Point.create(req.body)
-
-  res.status(201).json({
-      success: true,
-      data: point
-  })
-}catch(err) {
-    res.status(400).json({success: false});
-}
-}
-
-
-// PUT
-
-exports.updatePoint = async (req, res, next) => {
-    try {
-        const point = await Point.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
-        if(!point) {
-            return res.status(400).json({ success: false });
-        }
-        res.status(200).json({ success: true, data: point })
-    } catch (err) {
-        res.status(400).json({ success: false }); 
-    }
-  
+    const point = await Point.findById(req.params.id).populate({
+        path: 'logindates',
+        select: 'points'
+      });
     
-   
-}
-
-
-// DELETE
-
-exports.deletePoint = async (req, res, next) => {
-    try {
-        const point = await Point.findByIdAndDelete(req.params.id)
-        if(!point) {
-            return res.status(400).json({ success: false });
-        }
-        res.status(200).json({ success: true, data: {} })
-    } catch (err) {
-        res.status(400).json({ success: false }); 
-    }
-  
+      if (!point) {
+        return next(
+          new ErrorResponse(`No Point with the id of ${req.params.id}`, 404)
+        );
+      }
     
-   
+      res.status(200).json({
+        success: true,
+        data: point
+      });
 }
 
+
+/*exports.updatePoint = async(req,res,next) => {
+
+
+    const login = await LoginDate.findByIdAndUpdate(
+        req.params.id,
+      {
+        $inc: {
+           points: 15
+         
+        }
+    }
+          
+        );
+    
+    
+res.status(200).json({success: true})
+}*/
+
+    

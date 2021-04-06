@@ -16,16 +16,15 @@ const router = express.Router();
 
 
 router
-      .route('/')
-      .get(getPoints)
-      .post(createPoint);
+      
 
 
       router
       .route('/:id')
-      .get(getPoint)
-      .put(updatePoint)
-      .delete(deletePoint);
+      .get(getPoint);
+
+      
+     
 
   
 module.exports = router;

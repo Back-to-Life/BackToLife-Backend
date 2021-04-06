@@ -1,7 +1,13 @@
 const { query } = require('express');
+const { findOneAndUpdate } = require('../models/LoginDate');
 const  LoginDate = require('../models/LoginDate')
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
+const Points = require('../models/Points')
+
+
+
+
 
 // GET
 exports.getLogins = async (req, res, next) => {
@@ -23,16 +29,19 @@ exports.getLogin = async (req, res, next) => {
 
 
 
-       const login = await LoginDate.findById(req.params.id);
+       const login = await LoginDate.findByIdAndUpdate(
+           req.params.id,
+           {
+            $inc: {
+                loginCounter: 1
+            }
+        }
+           );
 
+    
        
-    const result = await LoginDate.findOneAndUpdate(
-       {
-           $inc: {
-               loginCounter: 1
-           }
-       }
-    )
+    
+       
 
        
        res.status(200).json({success: true })
@@ -48,14 +57,7 @@ exports.getLogin = async (req, res, next) => {
 exports.createLogin = async (req, res, next) => {
     req.body.user = req.params.id;
     const user = await User.findById(req.params.id);
-    const result = await LoginDate.findOneAndUpdate(
-        {
-            $inc: {
-                loginCounter: 1
-            }
-        }
-        )
-
+   
     if(!user){
         return next(
             new ErrorResponse(
@@ -81,34 +83,162 @@ exports.createLogin = async (req, res, next) => {
 
 
 // PUT
-
+ 
 exports.updateLogin = async (req, res, next) => {
-   let login = await LoginDate.findById(req.params.id)
-   const result = await LoginDate.findOneAndUpdate(
-    {
-        $inc: {
-            loginCounter: 1
-        }
-    }
-    )
-
-
+  
+   
+  let login =await LoginDate.findById(req.params.id)
+  let pointName = login.getpointName()
 
    if(!login) {
        return next(new ErrorResponse(`No user login with the id of ${req.params.id}`),
        404
        )
-   }
+   } 
+   
 
-  login = await LoginDate.findByIdAndUpdate(req.params.id, req.body , {
-      new:true,
-      runValidators: true
-  } )
+
+   switch (pointName) {
+       case "Glass":
+       
+        login = await LoginDate.findOneAndUpdate(
+
+            req.body,
+            { new: true,
+                runValidators: true,
+                $inc: {
+            points: 2
+            
+        }
+       
+        
+    }   
+    )
+    
+
+  
+        case "Plastic":
+          
+            login = await LoginDate.findOneAndUpdate(
+
+                req.body, 
+                {
+                    new: true,
+                    runValidators: true ,
+                    
+                        $inc: {
+                points: 13
+            }
+
+                   
+                    
+                   
+            }
+        
+           
+        
+                ) 
+                
+    
+        case "Electronic":
+    
+            login = await LoginDate.findByIdAndUpdate(req.params.id,
+
+                req.body, {
+                    new: true,
+                    runValidators: true,
+                    $inc: {
+                        points: 11
+                    }
+                   
+                }
+                )
+             
+        case "Battery":
+            login = await LoginDate.findByIdAndUpdate(req.params.id,
+
+                req.body, {
+                    new: true,
+                    runValidators: true,
+                    $inc: {
+                        points: 9
+                    }
+                }
+            
+             )
+        case "Metal":
+            login = await LoginDate.findByIdAndUpdate(req.params.id,
+
+                req.body, {
+                    new: true,
+                    runValidators: true,
+                    $inc: {
+                        points: 7
+                    }
+                }
+                   
+            
+        
+                )
+                
+        case "Organic":
+            login = await LoginDate.findByIdAndUpdate(req.params.id,
+
+                req.body, {
+                    new: true,
+                    runValidators: true,
+                    $inc: {
+                        points: 5
+                    }
+                }
+                    
+            
+        
+                ) 
+               
+        case "Paper":
+            login = await LoginDate.findByIdAndUpdate(req.params.id,
+
+                req.body,
+                {
+                    new: true,
+                    runValidators: true,
+                    $inc: {
+                        points: 3
+                    }
+                }
+                    
+                
+                )
+                
+                default:
+           break;
+   }
+   
+
+
+
+
+
+   
+       
+  
+
+ 
+
+ 
+  
+  
+  
+
+
+
+
     res.status(200).json({
-        succes: true,
+        success: true,
         data: login
     })
-   
+  
 }
 
 
@@ -131,3 +261,5 @@ exports.deleteLogin = async (req, res, next) => {
    
 }
 
+
+ 

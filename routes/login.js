@@ -10,6 +10,7 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+
 router
     .route('/')
     .get(getLogins)

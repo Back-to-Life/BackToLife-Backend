@@ -10,14 +10,20 @@ const LoginDateSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    user: {
-        type: mongoose.Schema.ObjectId,
-        red: "User",
+    points : {
+        type: Number,
         required: true
+    },
+    pointName : {
+        type: String
     }
-
 })
 
+LoginDateSchema.methods.getId = function() {
+    return this._id
+}
 
-
+LoginDateSchema.methods.getpointName = function() {
+    return this.pointName
+}
 module.exports = mongoose.model('LoginDate', LoginDateSchema);
