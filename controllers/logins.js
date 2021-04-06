@@ -87,112 +87,19 @@ exports.createLogin = async (req, res, next) => {
 exports.updateLogin = async (req, res, next) => {
   
 
-    const deneme = await LoginDate.findById(req.params.id)
-    pointName = req.body.pointName
-    
-
-    if(pointName == "Glass"){
-        const login = await LoginDate.findByIdAndUpdate(
-    
-             req.params.id,
-      {
-        $inc: {
-           points: 15
-         
+    try {
+        const login = await LoginDate.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        })
+        if(!login) {
+            return res.status(400).json({ success: false });
         }
+        res.status(200).json({ success: true, data: login })
+    } catch (err) {
+        res.status(400).json({ success: false }); 
     }
-          
-        
-        );
-    
-    }
-    if(pointName == "Plastic") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 13
-        
-       }
-   }
-         
-       
-       );
-    }
-    if(pointName == "Electronic") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 11
-        
-       }
-   }
-         
-       
-       );
-    }
-    if(pointName == "Battery") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 9
-        
-       }
-   }
-         
-       
-       );
-    }
-    if(pointName == "Metal") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 7
-        
-       }
-   }
-         
-       
-       );
-    }
-    if(pointName == "Organic") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 5
-        
-       }
-   }
-         
-       
-       );
-    }
-    if(pointName == "Paper") {
-        const login = await LoginDate.findByIdAndUpdate(
-    
-            req.params.id,
-     {
-       $inc: {
-          points: 3
-        
-       }
-   }
-         
-       
-       );
-    }
-    
-    
-res.status(200).json({success: true})
+
     
 
 }

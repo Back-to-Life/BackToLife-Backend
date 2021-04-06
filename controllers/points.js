@@ -23,11 +23,13 @@ exports.getPoint = async (req, res, next) => {
 }
 
 
-exports.updatePoint = async(req,res,next) => {
-
-
-    const login = await LoginDate.findByIdAndUpdate(
-        req.params.id,
+exports.updatePoint = async (req, res, next) => {
+  pointName = req.body.pointName
+    
+    if(pointName == "Glass"){
+        const login = await LoginDate.findByIdAndUpdate(
+    
+             req.params.id,
       {
         $inc: {
            points: 15
@@ -35,10 +37,96 @@ exports.updatePoint = async(req,res,next) => {
         }
     }
           
+        
         );
     
+    }
+    if(pointName == "Plastic") {
+        const login = await LoginDate.findByIdAndUpdate(
     
-res.status(200).json({success: true, data: login})
-}
-
+            req.params.id,
+     {
+       $inc: {
+          points: 13
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Electronic") {
+        const login = await LoginDate.findByIdAndUpdate(
     
+            req.params.id,
+     {
+       $inc: {
+          points: 11
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Battery") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 9
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Metal") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 7
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Organic") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 5
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Paper") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 3
+        
+       }
+   }
+         
+       
+       );
+    }
+    
+    
+res.status(200).json({success: true})
+    
+} 
