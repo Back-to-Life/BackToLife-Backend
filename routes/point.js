@@ -21,7 +21,8 @@ router
 
       router
       .route('/:id')
-      .get(getPoint);
+      .get(getPoint)
+      .put(updatePoint);
 
       
      

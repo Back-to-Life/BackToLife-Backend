@@ -1,5 +1,5 @@
 const { query } = require('express');
-const { findOneAndUpdate } = require('../models/LoginDate');
+const { findOneAndUpdate, findById } = require('../models/LoginDate');
 const  LoginDate = require('../models/LoginDate')
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
@@ -86,163 +86,116 @@ exports.createLogin = async (req, res, next) => {
  
 exports.updateLogin = async (req, res, next) => {
   
-   
-  let login =await LoginDate.findById(req.params.id)
-  let pointName = login.getpointName()
 
-   if(!login) {
-       return next(new ErrorResponse(`No user login with the id of ${req.params.id}`),
-       404
-       )
-   } 
-   
+    const deneme = await LoginDate.findById(req.params.id)
+    pointName = req.body.pointName
+    
 
-
-   switch (pointName) {
-       case "Glass":
-       
-        login = await LoginDate.findOneAndUpdate(
-
-            req.body,
-            { new: true,
-                runValidators: true,
-                $inc: {
-            points: 2
-            
+    if(pointName == "Glass"){
+        const login = await LoginDate.findByIdAndUpdate(
+    
+             req.params.id,
+      {
+        $inc: {
+           points: 15
+         
         }
-       
-        
-    }   
-    )
-    
-
-  
-        case "Plastic":
+    }
           
-            login = await LoginDate.findOneAndUpdate(
-
-                req.body, 
-                {
-                    new: true,
-                    runValidators: true ,
-                    
-                        $inc: {
-                points: 13
-            }
-
-                   
-                    
-                   
-            }
         
-           
-        
-                ) 
-                
+        );
     
-        case "Electronic":
+    }
+    if(pointName == "Plastic") {
+        const login = await LoginDate.findByIdAndUpdate(
     
-            login = await LoginDate.findByIdAndUpdate(req.params.id,
-
-                req.body, {
-                    new: true,
-                    runValidators: true,
-                    $inc: {
-                        points: 11
-                    }
-                   
-                }
-                )
-             
-        case "Battery":
-            login = await LoginDate.findByIdAndUpdate(req.params.id,
-
-                req.body, {
-                    new: true,
-                    runValidators: true,
-                    $inc: {
-                        points: 9
-                    }
-                }
-            
-             )
-        case "Metal":
-            login = await LoginDate.findByIdAndUpdate(req.params.id,
-
-                req.body, {
-                    new: true,
-                    runValidators: true,
-                    $inc: {
-                        points: 7
-                    }
-                }
-                   
-            
+            req.params.id,
+     {
+       $inc: {
+          points: 13
         
-                )
-                
-        case "Organic":
-            login = await LoginDate.findByIdAndUpdate(req.params.id,
-
-                req.body, {
-                    new: true,
-                    runValidators: true,
-                    $inc: {
-                        points: 5
-                    }
-                }
-                    
-            
-        
-                ) 
-               
-        case "Paper":
-            login = await LoginDate.findByIdAndUpdate(req.params.id,
-
-                req.body,
-                {
-                    new: true,
-                    runValidators: true,
-                    $inc: {
-                        points: 3
-                    }
-                }
-                    
-                
-                )
-                
-                default:
-           break;
+       }
    }
-   
-
-
-
-
-
-   
+         
        
-  
+       );
+    }
+    if(pointName == "Electronic") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 11
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Battery") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 9
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Metal") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 7
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Organic") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 5
+        
+       }
+   }
+         
+       
+       );
+    }
+    if(pointName == "Paper") {
+        const login = await LoginDate.findByIdAndUpdate(
+    
+            req.params.id,
+     {
+       $inc: {
+          points: 3
+        
+       }
+   }
+         
+       
+       );
+    }
+    
+    
+res.status(200).json({success: true})
+    
 
- 
-
- 
-  
-  
-  
-
-
-
-
-    res.status(200).json({
-        success: true,
-        data: login
-    })
-  
 }
-
-
-
 
 // DELETE
 

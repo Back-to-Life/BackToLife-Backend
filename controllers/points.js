@@ -23,7 +23,7 @@ exports.getPoint = async (req, res, next) => {
 }
 
 
-/*exports.updatePoint = async(req,res,next) => {
+exports.updatePoint = async(req,res,next) => {
 
 
     const login = await LoginDate.findByIdAndUpdate(
@@ -38,7 +38,7 @@ exports.getPoint = async (req, res, next) => {
         );
     
     
-res.status(200).json({success: true})
-}*/
+res.status(200).json({success: true, data: login})
+}
 
     
