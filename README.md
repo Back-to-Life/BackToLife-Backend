@@ -42,7 +42,7 @@ Delete login : DELETE        http://localhost:5000/logins/:id
 # Points
 
 
-Update a point : PUT          http://localhost:5000/points/:id
+Update a point : PUT          http://localhost:5000/users/:id/point
 
 
 

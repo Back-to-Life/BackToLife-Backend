@@ -2,14 +2,8 @@ const User = require ('../models/User')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const LoginDate = require('../models/LoginDate');
-const Points = require('../models/Points');
-const glass = 15;
-const plastic = 13
-const electronic = 11
-const battery = 9
-const metal = 7
-const organic = 5
-const paper = 3
+
+
 // Create User
 // POST
   
@@ -112,24 +106,3 @@ const sendTokenResponse = (user, statusCode, res, id) => {
     id
   });
 };
-
-exports.points = async (req, res, next) => {
-
-
-
- const login = await LoginDate.findByIdAndUpdate(req.params.id,
-  
-  {
-  
-       $inc : {
-         points: 15
-       }
-    
-} )
-res.status(200).json({
-  success: true
-})
-
-
-
-}

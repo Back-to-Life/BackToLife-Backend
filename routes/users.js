@@ -9,7 +9,9 @@ const {
     usingApplication
 
 } = require('../controllers/users')
-
+const {
+    updatePoint
+} = require('../controllers/points')
 const loginRouter = require("./login")
 const pointRouter = require("./point")
 
@@ -18,6 +20,7 @@ const router = express.Router();
 
 router.use('/:id/lastLoginUpdate',loginRouter)
 router.use('/points', pointRouter)
+router.use('/:id/point',updatePoint)
 router
       .route('/')
       .get(getUsers)
