@@ -2,12 +2,16 @@ const User = require ('../models/User')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const LoginDate = require('../models/LoginDate');
+const mailgun = require('mailgun-js')
 
+
+const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
+const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 
 // Create User
 // POST
   
-exports.register = async (req, res, next) => {
+/*exports.register = async (req, res, next) => {
    const { name, email, password } = req.body;
    
    // Create User
@@ -25,7 +29,68 @@ exports.register = async (req, res, next) => {
    sendTokenResponse(user, 200, res, id);
    
 
+}*/
+
+exports.register = async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  const activate_token = jwt.sign({name,email,password},process.env.JWT_ACC_ACTIVATE, {expiresIn: '20m'});
+
+  const data = {
+    from: 'noreply@backtolife.com',
+    to: email,
+    subject: 'BackToLife',
+    html:`
+    <h2>Please click on given link to activate your account</h2>
+    <p>${process.env.CLIENT_URL}/authentication/activate/${activate_token}</p>
+    `
+  };
+  mg.messages().send(data, function (error, body) {
+    if(error){
+      return res.json({
+        message: error.message
+      })
+
+      
+    }
+    return res.json({message:'Email has been sent'})
+  
+  });
+  
+
+
 }
+
+
+exports.activateAccount = async (req, res, next) => {
+  
+  const {token} = req.body;
+  if(token) {
+    jwt.verify(token, process.env.JWT_ACC_ACTIVATE, exports.function = async (err, decodedtoken) =>{
+      if(err) {
+        return res.status(400).json({error:"Incorrect link"})
+      }
+      const { name, email, password } = decodedtoken;
+      const user = await User.create({
+        name,
+        email,
+        password
+    })
+    const id = user.getId();
+
+   sendTokenResponse(user, 200, res, id);
+  
+   
+ 
+ 
+    
+    })
+  }
+  
+}
+
+
+
 
 
  
