@@ -22,6 +22,7 @@ Logout : GET                 http://localhost:5000/logout
 Get profile : GET            http://localhost:5000/me?Authorization=Baerer token
 
 
+Activate Account : POST       http://localhost:5000/email-activate
 # LoginDate
 
 Get all logins : GET         http://localhost:5000/logins
