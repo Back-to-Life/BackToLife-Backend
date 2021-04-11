@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const LoginDate = require('../models/LoginDate');
 const mailgun = require('mailgun-js')
+const sendEmail = require('../utils/sendEmail')
+const crypto = require('crypto')
+
 
 
 const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
@@ -10,27 +13,6 @@ const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 
 // Create User
 // POST
-  
-/*exports.register = async (req, res, next) => {
-   const { name, email, password } = req.body;
-   
-   // Create User
-   const user = await User.create({
-       name,
-       email,
-       password
-   })
- 
-  
-
-
-   const id = user.getId();
-
-   sendTokenResponse(user, 200, res, id);
-   
-
-}*/
-
 exports.register = async (req, res, next) => {
   const { name, email, password, point } = req.body;
 
@@ -171,4 +153,76 @@ const sendTokenResponse = (user, statusCode, res, id) => {
     token,
     id
   });
+};
+
+
+// Forgot password
+exports.forgotPassword = async (req, res, next) => {
+  // user is already available in req due to the protect middleware
+  const user = await User.findOne({ email: req.body.email });
+
+
+  if(!user) {
+    return next(new ErrorResponse('There is no user with that email', 404))
+  }
+
+
+  const resetToken = user.getResetPasswordToken();
+
+
+  await user.save({ validateBeforeSave: false })
+
+
+  // Create reset url
+  const resetUrl = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`
+
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message
+
+    })
+    res.status(200).json({ success: true, data:'Email sent' });
+  } catch (error) {
+    console.log(err);
+    user.getResetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false })
+
+    return next(new ErrorResponse('Email could not be sent', 500))
+  }
+  
+};
+
+
+// Reset password
+exports.resetPassword = async (req, res, next) => {
+ 
+  // Get hashed token
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }
+  });
+  if(!user) {
+    return next(new ErrorResponse('Invalid token', 400));
+  }
+
+  // Set new password
+
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  const id = user.getId();
+  sendTokenResponse(user, 200, res, id);
 };

@@ -5,8 +5,7 @@ const {
     getUsers, 
     createUser, 
     updateUser, 
-    deleteUser,
-    usingApplication
+    deleteUser
 
 } = require('../controllers/users')
 const {
