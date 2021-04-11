@@ -32,9 +32,9 @@ const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 }*/
 
 exports.register = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, point } = req.body;
 
-  const activate_token = jwt.sign({name,email,password},process.env.JWT_ACC_ACTIVATE, {expiresIn: '20m'});
+  const activate_token = jwt.sign({name,email,password,point},process.env.JWT_ACC_ACTIVATE, {expiresIn: '20m'});
 
   const data = {
     from: 'noreply@backtolife.com',
@@ -70,11 +70,12 @@ exports.activateAccount = async (req, res, next) => {
       if(err) {
         return res.status(400).json({error:"Incorrect link"})
       }
-      const { name, email, password } = decodedtoken;
+      const { name, email, password, point} = decodedtoken;
       const user = await User.create({
         name,
         email,
-        password
+        password,
+        point
     })
     const id = user.getId();
 

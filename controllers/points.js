@@ -1,7 +1,7 @@
 const Point = require('../models/Points')
 const ErrorResponse = require('../utils/errorResponse');
 const LoginDate = require('../models/LoginDate')
-
+const User = require('../models/User')
 
 // GET  
 exports.getPoint = async (req, res, next) => {
@@ -27,12 +27,12 @@ exports.updatePoint = async (req, res, next) => {
   pointName = req.body.pointName
     
     if(pointName == "Glass"){
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
              req.params.id,
       {
         $inc: {
-           points: 15
+           point: 15
          
         }
     }
@@ -42,12 +42,12 @@ exports.updatePoint = async (req, res, next) => {
     
     }
     if(pointName == "Plastic") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 13
+          point: 13
         
        }
    }
@@ -56,12 +56,12 @@ exports.updatePoint = async (req, res, next) => {
        );
     }
     if(pointName == "Electronic") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 11
+          point: 11
         
        }
    }
@@ -70,12 +70,12 @@ exports.updatePoint = async (req, res, next) => {
        );
     }
     if(pointName == "Battery") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 9
+          point: 9
         
        }
    }
@@ -84,12 +84,12 @@ exports.updatePoint = async (req, res, next) => {
        );
     }
     if(pointName == "Metal") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 7
+          point: 7
         
        }
    }
@@ -98,12 +98,12 @@ exports.updatePoint = async (req, res, next) => {
        );
     }
     if(pointName == "Organic") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 5
+          point: 5
         
        }
    }
@@ -112,12 +112,12 @@ exports.updatePoint = async (req, res, next) => {
        );
     }
     if(pointName == "Paper") {
-        const login = await LoginDate.findByIdAndUpdate(
+        const user = await User.findByIdAndUpdate(
     
             req.params.id,
      {
        $inc: {
-          points: 3
+          point: 3
         
        }
    }
