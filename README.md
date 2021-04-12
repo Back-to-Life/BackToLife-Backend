@@ -23,6 +23,13 @@ Get profile : GET            http://localhost:5000/me?Authorization=Baerer token
 
 
 Activate Account : POST       http://localhost:5000/email-activate
+
+
+Forgot Password : POST       http://localhost:5000/forgotPassword
+
+
+Reset Password : PUT         http://localhost:5000/resetPassword/:resetToken
+
 # LoginDate
 
 Get all logins : GET         http://localhost:5000/logins
