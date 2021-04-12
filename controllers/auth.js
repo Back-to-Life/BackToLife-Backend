@@ -72,11 +72,6 @@ exports.activateAccount = async (req, res, next) => {
   
 }
 
-
-
-
-
- 
 // Login User
 // POST
 exports.login = async (req, res, next) => {
@@ -158,7 +153,7 @@ const sendTokenResponse = (user, statusCode, res, id) => {
 
 // Forgot password
 exports.forgotPassword = async (req, res, next) => {
-  // user is already available in req due to the protect middleware
+  
   const user = await User.findOne({ email: req.body.email });
 
 
@@ -211,7 +206,7 @@ exports.resetPassword = async (req, res, next) => {
   const user = await User.findOne({
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() }
-  });
+  }); 
   if(!user) {
     return next(new ErrorResponse('Invalid token', 400));
   }
