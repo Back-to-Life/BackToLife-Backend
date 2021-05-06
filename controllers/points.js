@@ -1,7 +1,30 @@
 const Point = require('../models/Points')
 const ErrorResponse = require('../utils/errorResponse');
 const LoginDate = require('../models/LoginDate')
-const User = require('../models/User')
+const User = require('../models/User');
+const Points = require('../models/Points');
+
+
+exports.getPoints = async (req, res, next) => {
+
+
+  const points=await Point.find();
+  
+  res.status(200).json({
+      success: true,
+      count: points.length,
+      data: points
+})
+}
+
+exports.sortPoints = async (req, res, next) => {
+  const points = [];
+  for(i=0;i<10;i++){
+    points[i] = Point.find(req.params.point);
+  }
+  console.log(points)
+}
+
 
 // GET  
 exports.getPoint = async (req, res, next) => {

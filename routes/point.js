@@ -5,7 +5,8 @@ const {
     getPoints, 
     createPoint, 
     updatePoint, 
-    deletePoint
+    deletePoint,
+    sortPoints
 
 } = require('../controllers/points')
 
@@ -15,7 +16,11 @@ const router = express.Router();
 
 
 
+
 router
+      .route('/')
+      .get(getPoints)
+      .post(sortPoints);
       
 
 

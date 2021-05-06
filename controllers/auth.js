@@ -5,7 +5,7 @@ const LoginDate = require('../models/LoginDate');
 const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
-
+const token = Math.floor(Math.random()*999999);
 
 
 const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
@@ -14,17 +14,18 @@ const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 // Create User
 // POST
 exports.register = async (req, res, next) => {
-  const { name, email, password, point } = req.body;
+  const { name, email, password, point, randomCode } = req.body;
+  req.randomCode = token;
+ 
 
-  const activate_token = jwt.sign({name,email,password,point},process.env.JWT_ACC_ACTIVATE, {expiresIn: '20m'});
-
+ 
   const data = {
     from: 'noreply@backtolife.com',
     to: email,
     subject: 'BackToLife',
     html:`
     <h2>Please click on given link to activate your account</h2>
-    <p>${process.env.CLIENT_URL}/authentication/activate/${activate_token}</p>
+    <p>${process.env.CLIENT_URL}/${token}</p>
     `
   };
   mg.messages().send(data, function (error, body) {
@@ -35,42 +36,47 @@ exports.register = async (req, res, next) => {
 
       
     }
-    return res.json({message:'Email has been sent'})
+    return res.json({
+      message : "email has been send"
+    })
   
   });
   
-
-
+  
+ 
 }
 
 
+ 
 exports.activateAccount = async (req, res, next) => {
-  
-  const {token} = req.body;
-  if(token) {
-    jwt.verify(token, process.env.JWT_ACC_ACTIVATE, exports.function = async (err, decodedtoken) =>{
-      if(err) {
-        return res.status(400).json({error:"Incorrect link"})
-      }
-      const { name, email, password, point} = decodedtoken;
+  const { name, email, password, point, randomCode } = req.body;
+  if(randomCode) {
+    if(randomCode == token){
       const user = await User.create({
         name,
         email,
         password,
-        point
+        point,
+        randomCode
     })
     const id = user.getId();
 
    sendTokenResponse(user, 200, res, id);
+    }
+    
   
    
  
  
     
-    })
+  
   }
   
-}
+  
+  }
+  
+  
+
 
 // Login User
 // POST

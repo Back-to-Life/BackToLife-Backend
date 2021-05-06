@@ -24,8 +24,16 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    confirmationCode: { 
+        type: String, 
+        unique: true 
+    },
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    resetPasswordExpire: Date,
+    randomCode : {
+        type: Number,
+        unique: true
+    }
 
     
 })
@@ -66,7 +74,7 @@ UserSchema.methods.deleteToken = function(token, cb){
 // Generate and hash password token
 UserSchema.methods.getResetPasswordToken = function () {
     
-    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetToken =crypto.randomBytes(20).toString('hex');
 
     // Hash token and set to resetPasswordToken field
     this.resetPasswordToken = crypto
@@ -80,5 +88,14 @@ UserSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 }
 
+UserSchema.methods.createRandomCode = function () {
+   
+    this.randomCode = Math.floor(Math.random()*999999);
+
+}
+
+UserSchema.methods.getRandomCode = function () {
+    return this.randomCode;
+}
 
 module.exports = mongoose.model('User', UserSchema);
