@@ -3,7 +3,7 @@ const dotenv = require('dotenv')
 const logger = require('./middleware/logger')
 const connectDB = require('./config/db')
 const cookieParser = require('cookie-parser')
-
+const cors = require('cors')
 
 
 // Load env vars
@@ -37,6 +37,9 @@ app.use(logger)
 
 
 
+
+
+app.use(cors())
 
 
 

@@ -10,11 +10,11 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required:[true, 'Please add an email'],
-        unique: true,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             'Please add a valid email'
-        ]
+        ],
+        unique: true
     },
     password: {
         type: String,
@@ -22,17 +22,12 @@ const UserSchema = new mongoose.Schema({
     },
     point: {
         type: Number,
-        required: true
+        default: 0,
+        unique: false
     },
-    confirmationCode: { 
-        type: String, 
-        unique: true 
-    },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
     randomCode : {
         type: Number,
-        unique: true
+        unique: false
     }
 
     
@@ -56,6 +51,7 @@ UserSchema.methods.getSignedJwtToken = function () {
     })
    
   };
+  
 
 UserSchema.methods.getId = function() {
     return this._id
@@ -87,15 +83,4 @@ UserSchema.methods.getResetPasswordToken = function () {
 
     return resetToken;
 }
-
-UserSchema.methods.createRandomCode = function () {
-   
-    this.randomCode = Math.floor(Math.random()*999999);
-
-}
-
-UserSchema.methods.getRandomCode = function () {
-    return this.randomCode;
-}
-
 module.exports = mongoose.model('User', UserSchema);
