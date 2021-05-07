@@ -15,7 +15,7 @@ const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
 // POST
 exports.register = async (req, res, next) => {
   const { name, email, password, point, randomCode } = req.body;
-  /*req.randomCode = token;
+  req.randomCode = token;
  
 
  
@@ -43,18 +43,9 @@ exports.register = async (req, res, next) => {
   
   
   });
-  */
+  
 
-  const user = await User.create({
-        name,
-        email,
-        password,
-        point,
-        randomCode
-    })
-    const id = user.getId();
-
-   sendTokenResponse(user, 200, res, id);
+  
 }
 
 
