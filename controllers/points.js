@@ -18,11 +18,12 @@ exports.getPoints = async (req, res, next) => {
 }
 
 exports.sortPoints = async (req, res, next) => {
-  const points = [];
+  /*const points = [];
   for(i=0;i<10;i++){
     points[i] = Point.find(req.params.point);
   }
-  console.log(points)
+  console.log(points)*/
+  
 }
 
 

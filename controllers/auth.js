@@ -5,8 +5,8 @@ const LoginDate = require('../models/LoginDate');
 const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
-const token = Math.floor(Math.random()*999999);
-
+let token = Math.floor(Math.random()*999999);
+var passport = require("passport")
 
 const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
 const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
@@ -24,7 +24,7 @@ exports.register = async (req, res, next) => {
     to: email,
     subject: 'BackToLife',
     html:`
-    <h2>Please click on given link to activate your account</h2>
+    <h2>Hello ${name}!Please copy token that sent.</h2>
     <p>${token}</p>
     `
   };
@@ -43,39 +43,33 @@ exports.register = async (req, res, next) => {
   
   
   });
-  
-
+ 
   
 }
 
 
  
 exports.activateAccount = async (req, res, next) => {
-  const { name, email, password, point, randomCode } = req.body;
+  const {name, email, password, randomCode } = req.body;
+  
   if(randomCode) {
     if(randomCode == token){
       const user = await User.create({
         name,
         email,
         password,
-        point,
-        randomCode
+        login: true
+
     })
     const id = user.getId();
 
    sendTokenResponse(user, 200, res, id);
     }
-    
-  
-   
- 
- 
-    
-  
   }
   
   
-  }
+  
+}
   
   
 
@@ -101,13 +95,20 @@ exports.login = async (req, res, next) => {
   const isMatch = await user.matchPassword(password);
 
   if (!isMatch) {
+
+    user.login = false;
+    user.save();
     return next(new ErrorResponse('Invalid credentials', 401));
+    
   }
-
-
-
+  
+  
+  user.login = true;
+  user.save();
   const id = user.getId();
   sendTokenResponse(user, 200, res, id);
+
+
   
   
  }
@@ -116,6 +117,10 @@ exports.login = async (req, res, next) => {
   res.cookie('token', 'none', {
     httpOnly: true,
   });
+
+  user = await User.findOne({login: true});
+  user.login = false;
+  user.save()
 
   res.status(200).json({
     success: true,
@@ -126,13 +131,20 @@ exports.login = async (req, res, next) => {
 
 
 exports.getMe = async (req, res, next) => {
-  // user is already available in req due to the protect middleware
-  const user = req.user;
-
-  res.status(200).json({
+  
+  const user = await User.findOne({login:true})
+  
+    res.status(200).json({
     success: true,
     data: user,
   });
+  
+  
+  
+  
+
+
+  
 };
 
 

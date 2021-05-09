@@ -5,7 +5,8 @@ const {
     getUsers, 
     createUser, 
     updateUser, 
-    deleteUser
+    deleteUser,
+    getSortingUsers
 
 } = require('../controllers/users')
 const {
@@ -19,18 +20,21 @@ const router = express.Router();
 
 router.use('/:id/lastLoginUpdate',loginRouter)
 router.use('/points', pointRouter)
-router.use('/:id/point',updatePoint)
+router.use('/:id/point',updatePoint);
+router.get('/sort', getSortingUsers);
 router
       .route('/')
       .get(getUsers)
       .post(createUser);
 
 
-      router
+router
       .route('/:id')
       .get(getUser)
       .put(updateUser)
       .delete(deleteUser);
+
+            
 
   
 module.exports = router;

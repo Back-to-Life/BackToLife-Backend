@@ -1,7 +1,7 @@
 # BackToLife-Backend
 
 # User Authentication
-Get all users :  GET         http://localhost:5000/login
+Get all users :  GET         http://localhost:5000/users
 
 
 Signup user : POST           http://localhost:5000/signup
@@ -29,6 +29,9 @@ Forgot Password : POST       http://localhost:5000/forgotPassword
 
 
 Reset Password : PUT         http://localhost:5000/resetPassword/:resetToken
+
+
+Sort All Users               http://localhost:5000/users/sort
 
 # LoginDate
 

@@ -28,6 +28,9 @@ const UserSchema = new mongoose.Schema({
     randomCode : {
         type: Number,
         unique: false
+    },
+    login : {
+        type: Boolean
     }
 
     
