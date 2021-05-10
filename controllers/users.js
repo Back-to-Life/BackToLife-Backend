@@ -6,7 +6,7 @@ const  User = require('../models/User')
 exports.getUsers = async (req, res, next) => {
 
 
-    const users = await User.findOne();
+    const users = await User.find()
     
     res.status(200).json({
         success: true,
@@ -14,6 +14,8 @@ exports.getUsers = async (req, res, next) => {
         data: users
 })
 }
+
+
 // GET  
 exports.getUser = async (req, res, next) => {
    try {
@@ -81,16 +83,3 @@ exports.deleteUser = async (req, res, next) => {
    
 }
 
-
-// GET
-exports.getSortingUsers = async (req, res, next) => {
-
-
-    const users = await User.find().sort({"point":1});
-    
-    res.status(200).json({
-        success: true,
-        count: users.length,
-        data: users
-})
-}

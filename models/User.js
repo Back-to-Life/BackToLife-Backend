@@ -32,9 +32,11 @@ const UserSchema = new mongoose.Schema({
     login : {
         type: Boolean
     }
-
     
 })
+
+
+
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
@@ -86,4 +88,9 @@ UserSchema.methods.getResetPasswordToken = function () {
 
     return resetToken;
 }
+
+UserSchema.methods.getPoint = function () {
+    return this.point
+}
+
 module.exports = mongoose.model('User', UserSchema);

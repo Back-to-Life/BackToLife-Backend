@@ -16,17 +16,6 @@ exports.getPoints = async (req, res, next) => {
       data: points
 })
 }
-
-exports.sortPoints = async (req, res, next) => {
-  /*const points = [];
-  for(i=0;i<10;i++){
-    points[i] = Point.find(req.params.point);
-  }
-  console.log(points)*/
-  
-}
-
-
 // GET  
 exports.getPoint = async (req, res, next) => {
     const point = await Point.findById(req.params.id).populate({

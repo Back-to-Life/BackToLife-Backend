@@ -1,12 +1,13 @@
 const User = require ('../models/User')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
-const LoginDate = require('../models/LoginDate');
 const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
 let token = Math.floor(Math.random()*999999);
-var passport = require("passport")
+
+
+
 
 const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
 const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
@@ -43,12 +44,11 @@ exports.register = async (req, res, next) => {
   
   
   });
+
  
   
 }
 
-
- 
 exports.activateAccount = async (req, res, next) => {
   const {name, email, password, randomCode } = req.body;
   
@@ -241,3 +241,48 @@ exports.resetPassword = async (req, res, next) => {
   const id = user.getId();
   sendTokenResponse(user, 200, res, id);
 };
+
+exports.sortUsers = async (req, res, next) => {
+
+  let users = new Array();
+
+  const count = await User.find().count();
+  console.log(count)
+
+
+
+  let i = 0;
+  for(i = 0; i <= count; i++) {
+    users[i] = await User.findOne({id: i});
+
+  }
+
+
+  let points = new Array();
+  let j = 1;
+  for(j = 1; j <= count; j++) {
+    points[j] = users[j].point;
+  
+  }
+
+  let temp;
+  temp = await User.findOne({id: 1});
+  temp = {}
+
+
+for(var k = 1; k <= count; k++) {
+  if(points[k] > points[k+1]){
+    temp = users[k]
+    users[k] = users[k+1];
+    users[k+1] = temp
+  }
+}
+  
+
+  
+  res.status(200).json({
+    success: true,
+    data: users
+  })
+
+}

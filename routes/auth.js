@@ -1,5 +1,5 @@
 const express = require('express')
-const { register, login, getMe, logout, activateAccount, forgotPassword, resetPassword } = require('../controllers/auth')
+const { register, login, getMe, logout, activateAccount, forgotPassword, resetPassword, sortUsers } = require('../controllers/auth')
 const { protect } = require('../middleware/auth');
 const User = require ('../models/User')
 
@@ -10,7 +10,7 @@ router.post('/email-activate',activateAccount)
 
 router.post('/login', login);
 router.get('/logout',logout);
-
+router.get('/sort',sortUsers)
 
 
 router.get('/me', getMe);
