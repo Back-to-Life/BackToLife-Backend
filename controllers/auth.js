@@ -5,7 +5,7 @@ const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
 let token = Math.floor(Math.random()*999999);
-
+let forgotToken = Math.floor(Math.random()*999999);
 
 
 
@@ -173,73 +173,66 @@ const sendTokenResponse = (user, statusCode, res, id) => {
 
 // Forgot password
 exports.forgotPassword = async (req, res, next) => {
+  const {email} = req.body;
+  req.forgotCode = forgotToken;
+
+
+ 
+  const data = {
+    from: 'noreply@backtolife.com',
+    to: email,
+    subject: 'BackToLife Forgot Password',
+    html:`
+    <h2>Hello ! Please copy token that sent.</h2>
+    <p>${forgotToken}</p>
+    `
+  };
+  mg.messages().send(data, function (error, body) {
+    if(error){
+      return res.json({
+        message: error.message
+      })
+
+      
+    }
   
-  const user = await User.findOne({ email: req.body.email });
-
-
-  if(!user) {
-    return next(new ErrorResponse('There is no user with that email', 404))
-  }
-
-
-  const resetToken = user.getResetPasswordToken();
-
-
-  await user.save({ validateBeforeSave: false })
-
-
-  // Create reset url
-  const resetUrl = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`
-
-  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Password reset token',
-      message
-
+    return res.json({
+      message : "email has been send"
     })
-    res.status(200).json({ success: true, data:'Email sent' });
-  } catch (error) {
-    console.log(err);
-    user.getResetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-
-    await user.save({ validateBeforeSave: false })
-
-    return next(new ErrorResponse('Email could not be sent', 500))
-  }
   
+  
+  });
+
+ 
 };
 
 
 // Reset password
 exports.resetPassword = async (req, res, next) => {
- 
-  // Get hashed token
-  const resetPasswordToken = crypto
-    .createHash('sha256')
-    .update(req.params.resetToken)
-    .digest('hex');
+  const {forgotCode, email, password } = req.body;
+  
+  if(forgotCode){
+   if(forgotCode == forgotToken){
+     const user = await User.findOne({email: email})
+      user.password = password;
+      user.save();
+      res.status(200).json({
+        success: true
+      })
 
-  const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() }
-  }); 
-  if(!user) {
-    return next(new ErrorResponse('Invalid token', 400));
+    
+   }else{
+     res.status(400).json({
+       success: false,
+       message: "Wrong code!"
+       
+     })
+   }
+  
   }
+  
 
-  // Set new password
 
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
-
-  const id = user.getId();
-  sendTokenResponse(user, 200, res, id);
 };
 
 exports.sortUsers = async (req, res, next) => {

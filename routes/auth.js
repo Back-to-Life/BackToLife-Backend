@@ -15,5 +15,5 @@ router.get('/sort',sortUsers)
 
 router.get('/me', getMe);
 router.post('/forgotPassword', forgotPassword);
-router.put('/resetPassword/:resetToken', resetPassword);
+router.put('/resetPassword', resetPassword);
 module.exports = router; 

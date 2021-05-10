@@ -31,6 +31,9 @@ const UserSchema = new mongoose.Schema({
     },
     login : {
         type: Boolean
+    },
+    forgotCode: {
+        type: Number
     }
     
 })
@@ -89,8 +92,5 @@ UserSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 }
 
-UserSchema.methods.getPoint = function () {
-    return this.point
-}
 
 module.exports = mongoose.model('User', UserSchema);
