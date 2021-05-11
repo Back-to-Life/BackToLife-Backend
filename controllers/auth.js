@@ -114,7 +114,7 @@ exports.login = async (req, res, next) => {
  }
 
  exports.logout = async (req, res, next) => {
-  res.cookie('token', 'none', {
+ res.cookie('token', 'none', {
     httpOnly: true,
   });
 
@@ -244,18 +244,10 @@ exports.sortUsers = async (req, res, next) => {
 
 
 
-  let i = 0;
-  for(i = 0; i <= count; i++) {
+  let i = 1;
+  for(i = 1; i <= count; i++) {
     users[i] = await User.findOne({id: i});
 
-  }
-
-
-  let points = new Array();
-  let j = 1;
-  for(j = 1; j <= count; j++) {
-    points[j] = users[j].point;
-  
   }
 
   let temp;
@@ -263,19 +255,29 @@ exports.sortUsers = async (req, res, next) => {
   temp = {}
 
 
-for(var k = 1; k <= count; k++) {
-  if(points[k] > points[k+1]){
-    temp = users[k]
-    users[k] = users[k+1];
-    users[k+1] = temp
-  }
-}
-  
-
-  
+ 
+ sort(users, count)
   res.status(200).json({
     success: true,
     data: users
   })
 
+}
+async function sort(users, count)
+{
+  
+  if (count == 1){
+    return;
+  }
+  for(var i = 1; i< count; i++) {
+    if(users[i] > users[i+1]){
+      temp = users[i]
+      users[i] = users[i+1];
+      users[i+1] = temp
+    }
+
+  }
+  
+  sort(users, count-1)
+    
 }
