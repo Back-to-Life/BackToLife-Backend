@@ -244,8 +244,8 @@ exports.sortUsers = async (req, res, next) => {
 
 
 
-  let i = 1;
-  for(i = 1; i <= count; i++) {
+  let i = 0;
+  for(i = 0; i < count; i++) {
     users[i] = await User.findOne({id: i});
 
   }
@@ -269,7 +269,7 @@ async function sort(users, count)
   if (count == 1){
     return;
   }
-  for(var i = 1; i< count; i++) {
+  for(var i = 0; i< count; i++) {
     if(users[i] > users[i+1]){
       temp = users[i]
       users[i] = users[i+1];
