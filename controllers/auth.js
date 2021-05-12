@@ -4,48 +4,56 @@ const ErrorResponse = require('../utils/errorResponse');
 const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
+const nodemailer = require("nodemailer")
 let token = Math.floor(Math.random()*999999);
 let forgotToken = Math.floor(Math.random()*999999);
 
 
 
-const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
-const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
+/*const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
+const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});*/
+
+var transporter = nodemailer.createTransport({
+  service: 'hotmail',
+  auth: {
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
+  }
+});
 
 // Create User
 // POST
 exports.register = async (req, res, next) => {
   const { name, email, password, point, randomCode } = req.body;
   req.randomCode = token;
- 
 
- 
-  const data = {
-    from: 'noreply@backtolife.com',
+  
+  
+  var data = {
+    from: process.env.NODEMAILER_USER,
     to: email,
-    subject: 'BackToLife',
+    subject: 'Back To Life',
     html:`
-    <h2>Hello ${name}!Please copy token that sent.</h2>
+    <h2>Hello ${name} ! Please copy token that sent.</h2>
     <p>${token}</p>
     `
   };
-  mg.messages().send(data, function (error, body) {
-    if(error){
+  
+  transporter.sendMail(data, function(error, info){
+    if (error) {
       return res.json({
-        message: error.message
+        error
       })
-
-      
+    } else {
+      return res.json({
+        message: "Email sent."
+      })
     }
-  
-    return res.json({
-      message : "email has been send"
-    })
-  
-  
   });
+ 
 
  
+  
   
 }
 
@@ -179,9 +187,9 @@ exports.forgotPassword = async (req, res, next) => {
 
  
   const data = {
-    from: 'noreply@backtolife.com',
+    from: process.env.NODEMAILER_USER,
     to: email,
-    subject: 'BackToLife Forgot Password',
+    subject: 'Back To Life Forgot Password',
     html:`
     <h2>Hello ! Please copy token that sent.</h2>
     <p>${forgotToken}</p>
@@ -253,14 +261,26 @@ exports.sortUsers = async (req, res, next) => {
   let temp;
   temp = await User.findOne({id: 1});
   temp = {}
+  sort(users, count)
+
+  let names = new Array();
+  let points = new Array();
+  let ids = new Array();
+
+  for(let a = 0; a < count; a++) {
+    names[a] = users[a].name
+    points[a] = users[a].point
+    ids[a] = users[a]._id
+  }
+
+  return res.json({
+    names,
+    points,
+    ids
+  }) 
 
 
- 
- sort(users, count)
-  res.status(200).json({
-    success: true,
-    data: users
-  })
+
 
 }
 async function sort(users, count)
@@ -269,7 +289,7 @@ async function sort(users, count)
   if (count == 1){
     return;
   }
-  for(var i = 0; i< count; i++) {
+  for(var i = 0; i < count; i++) {
     if(users[i] > users[i+1]){
       temp = users[i]
       users[i] = users[i+1];

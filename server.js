@@ -39,7 +39,7 @@ app.use(logger)
 
 
 
-app.use(cors())
+//app.use(cors())
 
 
 
