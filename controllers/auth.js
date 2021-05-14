@@ -7,6 +7,7 @@ const crypto = require('crypto')
 const nodemailer = require("nodemailer");
 const { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } = require('constants');
 
+let token = Math.floor(Math.random()*999999);
 let forgotToken = Math.floor(Math.random()*999999);
 
 var transporter = nodemailer.createTransport({
@@ -20,7 +21,7 @@ var transporter = nodemailer.createTransport({
 // Create User
 // POST
 exports.register = async (req, res, next) => {
-  let token = Math.floor(Math.random()*999999);
+ 
   const { name, email, password } = req.body;
  // req.randomCode = token;
 
@@ -46,39 +47,47 @@ exports.register = async (req, res, next) => {
       })
       
     }
+   
   });
- 
-  const user = await User.create({
+ /* const user = await User.create({
     name,
     email,
     password,
     login: false,
     randomCode: token
   
-  
-  })
+
+})*/
+
   
   
 }
 
 exports.activateAccount = async (req, res, next) => {
   const {name, email, password, randomCode } = req.body;
-  let comeToToken = randomCode;
+ // let comeToToken = randomCode;
   console.log(token);
   console.log(randomCode);
 
 
-  const count = await User.find().count();
-  const user = await User.findByIdAndUpdate()
+  /*const user = await User.findOneAndDelete({login:true} && {randomCode:token})
+  return res.json({
+    data: user
+  })
+*/
 
-    if(randomCode) {
+  const count = await User.find().count();
+ 
+
+  if(randomCode) {
     if(randomCode == token){
       const user = await User.create({
         name,
         email,
         password,
         login: true,
-        id : (count) == 0 ? count: count+1
+        id : (count) == 0 ? count: count+1,
+        randomCode 
 
     })
     const id = user.getId();
@@ -87,7 +96,20 @@ exports.activateAccount = async (req, res, next) => {
     }
   }  
 }
-  
+
+
+exports.removeAccount = async (req, res, next) => {
+  const {name, email, password, randomCode } = req.body;
+ // let comeToToken = randomCode;
+  console.log(token);
+  console.log(randomCode);
+
+
+  const user = await User.findOneAndDelete({login:true} && {randomCode:token})
+  return res.json({
+    data: user
+  })
+}
   
 
 
