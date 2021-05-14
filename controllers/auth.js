@@ -4,14 +4,10 @@ const ErrorResponse = require('../utils/errorResponse');
 const mailgun = require('mailgun-js')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
-const nodemailer = require("nodemailer")
-let token = Math.floor(Math.random()*999999);
+const nodemailer = require("nodemailer");
+const { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } = require('constants');
+
 let forgotToken = Math.floor(Math.random()*999999);
-
-
-
-/*const DOMAIN = 'sandboxe2c61ef61a034fd4b171bd2292658dbf.mailgun.org'
-const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});*/
 
 var transporter = nodemailer.createTransport({
   service: 'hotmail',
@@ -24,18 +20,17 @@ var transporter = nodemailer.createTransport({
 // Create User
 // POST
 exports.register = async (req, res, next) => {
-  const { name, email, password, point, randomCode } = req.body;
-  req.randomCode = token;
+  let token = Math.floor(Math.random()*999999);
+  const { name, email, password } = req.body;
+ // req.randomCode = token;
 
-  
-  
   var data = {
     from: process.env.NODEMAILER_USER,
     to: email,
     subject: 'Back To Life',
     html:`
-    <h2>Hello ${name} ! Please copy token that sent.</h2>
-    <p>${token}</p>
+    <h1>Hello ${name} ! Please copy token that sent.</h1>
+    <h1>${token}</h1>
     `
   };
   
@@ -45,38 +40,52 @@ exports.register = async (req, res, next) => {
         error
       })
     } else {
+      
       return res.json({
         message: "Email sent."
       })
+      
     }
   });
  
-
- 
+  const user = await User.create({
+    name,
+    email,
+    password,
+    login: false,
+    randomCode: token
+  
+  
+  })
   
   
 }
 
 exports.activateAccount = async (req, res, next) => {
   const {name, email, password, randomCode } = req.body;
-  
-  if(randomCode) {
+  let comeToToken = randomCode;
+  console.log(token);
+  console.log(randomCode);
+
+
+  const count = await User.find().count();
+  const user = await User.findByIdAndUpdate()
+
+    if(randomCode) {
     if(randomCode == token){
       const user = await User.create({
         name,
         email,
         password,
-        login: true
+        login: true,
+        id : (count) == 0 ? count: count+1
 
     })
     const id = user.getId();
 
    sendTokenResponse(user, 200, res, id);
     }
-  }
-  
-  
-  
+  }  
 }
   
   
@@ -146,13 +155,7 @@ exports.getMe = async (req, res, next) => {
     success: true,
     data: user,
   });
-  
-  
-  
-  
 
-
-  
 };
 
 
@@ -207,11 +210,9 @@ exports.forgotPassword = async (req, res, next) => {
     return res.json({
       message : "email has been send"
     })
-  
-  
+ 
   });
 
- 
 };
 
 
@@ -238,10 +239,25 @@ exports.resetPassword = async (req, res, next) => {
    }
   
   }
-  
+}
+
+exports.updateUrl = async (req, res, next) => {
+  const url = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, url, {
+        new: true,
+        runValidators: true
+    })
+    if(!user) {
+        return res.status(400).json({ success: false });
+    }
+    res.status(200).json({ success: true, data: user })
+} catch (err) {
+    res.status(400).json({ success: false }); 
+}
 
 
-};
+}
 
 exports.sortUsers = async (req, res, next) => {
 
@@ -249,7 +265,6 @@ exports.sortUsers = async (req, res, next) => {
 
   const count = await User.find().count();
   console.log(count)
-
 
 
   let i = 0;
@@ -274,15 +289,12 @@ exports.sortUsers = async (req, res, next) => {
   }
 
   return res.json({
-    names,
-    points,
-    ids
+    data:users
   }) 
-
-
-
-
 }
+
+
+
 async function sort(users, count)
 {
   

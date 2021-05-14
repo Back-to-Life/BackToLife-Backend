@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
+const { isString } = require('util')
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -34,8 +35,13 @@ const UserSchema = new mongoose.Schema({
     },
     forgotCode: {
         type: Number
+    },
+    id: {
+        type: Number
+    },
+    imageUrl: {
+        type: String
     }
-    
 })
 
 
@@ -91,6 +97,5 @@ UserSchema.methods.getResetPasswordToken = function () {
 
     return resetToken;
 }
-
 
 module.exports = mongoose.model('User', UserSchema);
