@@ -204,7 +204,10 @@ exports.getMe = async (req, res, next) => {
 const sendTokenResponse = (user, statusCode, res, id) => {
   // Create token
   const token = user.getSignedJwtToken();
-
+  //const user = await User.findOne({email:email})
+  user.refreshToken = token;
+  user.save()
+  console.log(user.refreshToken);
   const options = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
