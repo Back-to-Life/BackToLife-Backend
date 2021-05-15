@@ -286,7 +286,7 @@ exports.resetPassword = async (req, res, next) => {
   }
 }
 
-/*exports.updateUrl = async (req, res, next) => {
+exports.updateUrl = async (req, res, next) => {
   const {oldUrl, newUrl} = req.body;
   /*try {
     const user = await User.findByIdAndUpdate(req.params.id, url, {
@@ -301,12 +301,15 @@ exports.resetPassword = async (req, res, next) => {
     res.status(400).json({ success: false }); 
 }
 */
-/*const user = await User.findOne({imageUrl:oldUrl});
+const user = await User.findOne({imageUrl:oldUrl});
 user.imageUrl = newUrl;
 user.save();
+return res.json({
+  data: user.imageUrl
+})
 
 }
-*/
+
 
 exports.sortUsers = async (req, res, next) => {
 
@@ -314,6 +317,8 @@ exports.sortUsers = async (req, res, next) => {
 
   const count = await User.find().count();
   console.log(count)
+
+  console.log(User.find())
 
 
   let i = 0;
@@ -326,16 +331,17 @@ exports.sortUsers = async (req, res, next) => {
   temp = await User.findOne({id: 1});
   temp = {}
   sort(users, count)
+  
 
   let names = new Array();
   let points = new Array();
   let ids = new Array();
 
-  for(let a = 0; a < count; a++) {
+  /*for(let a = 0; a < count; a++) {
     names[a] = users[a].name
     points[a] = users[a].point
     ids[a] = users[a]._id
-  }
+  }*/
 
   return res.json({
     data:users
