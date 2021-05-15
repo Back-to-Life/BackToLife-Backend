@@ -206,7 +206,7 @@ const sendTokenResponse = (user, statusCode, res, id) => {
   const token = user.getSignedJwtToken();
   //const user = await User.findOne({email:email})
   user.refreshToken = token;
-  user.save()
+ 
   console.log(user.refreshToken);
   const options = {
     expires: new Date(
@@ -286,9 +286,9 @@ exports.resetPassword = async (req, res, next) => {
   }
 }
 
-exports.updateUrl = async (req, res, next) => {
-  const url = req.body;
-  try {
+/*exports.updateUrl = async (req, res, next) => {
+  const {oldUrl, newUrl} = req.body;
+  /*try {
     const user = await User.findByIdAndUpdate(req.params.id, url, {
         new: true,
         runValidators: true
@@ -300,10 +300,13 @@ exports.updateUrl = async (req, res, next) => {
 } catch (err) {
     res.status(400).json({ success: false }); 
 }
-
+*/
+/*const user = await User.findOne({imageUrl:oldUrl});
+user.imageUrl = newUrl;
+user.save();
 
 }
-
+*/
 
 exports.sortUsers = async (req, res, next) => {
 
