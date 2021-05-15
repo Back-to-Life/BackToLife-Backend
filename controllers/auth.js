@@ -21,46 +21,58 @@ var transporter = nodemailer.createTransport({
 // Create User
 // POST
 exports.register = async (req, res, next) => {
- 
+  let token = Math.floor(Math.random() * 999999);
   const { name, email, password } = req.body;
- // req.randomCode = token;
+  // req.randomCode = token;
+
+  console.log(token);
 
   var data = {
     from: process.env.NODEMAILER_USER,
     to: email,
     subject: 'Back To Life',
-    html:`
+    html: `
     <h1>Hello ${name} ! Please copy token that sent.</h1>
     <h1>${token}</h1>
     `
   };
-  
-  transporter.sendMail(data, function(error, info){
-    if (error) {
-      return res.json({
-        error
-      })
+
+
+  try {
+    const userExist = await User.exists({ email })
+    console.log(userExist);
+    if (userExist) {
+      res.status(401).json({
+        success: "false",
+        because: "this is email is using bro"
+      });
     } else {
-      
-      return res.json({
-        message: "Email sent."
-      })
-      
+
+      const mailSucces = transporter.sendMail(data, async function (error, info) {
+        if (error) {
+          return res.json({
+            message: "Mail is not goin server broken ",
+            errorMessage: error
+          })
+        } else {
+          const user = await User.create({
+            name,
+            email,
+            password,
+            login: false,
+            point: 0,
+            randomCode: token
+          });
+          return res.json({
+            message: "Email Gönderildi",
+            register: true
+          });
+        }
+      });
     }
-   
-  });
- /* const user = await User.create({
-    name,
-    email,
-    password,
-    login: false,
-    randomCode: token
-  
-
-})*/
-
-  
-  
+  } catch (e) {
+    return res.status(500).json(errorHelper('00051', req, err.message));
+  }
 }
 
 exports.activateAccount = async (req, res, next) => {
