@@ -98,4 +98,14 @@ UserSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 }
 
+UserSchema.methods.deleteCode = function () {
+    var user = this;
+
+    user.update({$unset: {randomCode: 0}}, function(err,user){
+        if(err) return cb(err);
+
+
+})
+}
+
 module.exports = mongoose.model('User', UserSchema);

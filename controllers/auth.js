@@ -55,13 +55,15 @@ exports.register = async (req, res, next) => {
             errorMessage: error
           })
         } else {
+          const count = await User.find().count();
           const user = await User.create({
             name,
             email,
             password,
             login: false,
             point: 0,
-            randomCode: token
+            randomCode: token,
+            id: count
           });
           return res.json({
             message: "Email Gönderildi",
@@ -76,55 +78,61 @@ exports.register = async (req, res, next) => {
 }
 
 exports.activateAccount = async (req, res, next) => {
-  const {name, email, password, randomCode } = req.body;
- // let comeToToken = randomCode;
-  console.log(token);
-  console.log(randomCode);
+  const {email, randomCodeReq, } = req.body;
+  const userEmailSearch = await User.find({ email: email });
+     console.log(randomCodeReq);
+    console.log(userEmailSearch);
+    console.log(userEmailSearch[0].login);
+    console.log(userEmailSearch[0].randomCode); 
 
-
-  /*const user = await User.findOneAndDelete({login:true} && {randomCode:token})
-  return res.json({
-    data: user
-  })
-*/
-
-  const count = await User.find().count();
- 
-
-  if(randomCode) {
-    if(randomCode == token){
-      const user = await User.create({
-        name,
-        email,
-        password,
-        login: true,
-        id : (count) == 0 ? count: count+1,
-        randomCode 
-
-    })
-    const id = user.getId();
-
-   sendTokenResponse(user, 200, res, id);
+  if (randomCodeReq == userEmailSearch[0].randomCode && userEmailSearch[0].login == false) {
+    console.log('burdayım lo');
+    try {
+     // const count = await User.find().count();
+      const user = await User.findOne({email:email})
+      user.randomCode = 0;
+      user.save();
+   
+     res.status(200).json({
+        success: true
+      });
+      
+    } catch (error) {
+      return res.status(500).json('00051', req, error.message);
     }
-  }  
+  }
+}
+exports.deleteRandomCode = async(req, res, next) => {
+
+  const user = await User.findOne({randomCode:0});
+  user.deleteCode();
+  user.save() 
+  res.status(200).json({
+    success: true
+  })
 }
 
 
 exports.removeAccount = async (req, res, next) => {
-  const {name, email, password, randomCode } = req.body;
- // let comeToToken = randomCode;
-  console.log(token);
-  console.log(randomCode);
+  const {email } = req.body;
 
 
-  const user = await User.findOneAndDelete({login:true} && {randomCode:token})
-  return res.json({
-    data: user
-  })
+  const user = await User.findOne({email:email})
+  if(user.randomCode && user.login == false) {
+    user.remove()
+    res.status(200).json({
+      success: true
+    })
+  }else {
+    res.status(400).json({
+      success:false
+    })
+  }
+
+
+  
 }
   
-
-
 // Login User
 // POST
 exports.login = async (req, res, next) => {
@@ -292,6 +300,7 @@ exports.updateUrl = async (req, res, next) => {
 
 
 }
+
 
 exports.sortUsers = async (req, res, next) => {
 
