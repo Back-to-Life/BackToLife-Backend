@@ -309,62 +309,46 @@ return res.json({
 })
 
 }
-
-
 exports.sortUsers = async (req, res, next) => {
 
-  let users = new Array();
-
   const count = await User.find().count();
-  console.log(count)
-
-  console.log(User.find())
 
 
-  let i = 0;
-  for(i = 0; i < count; i++) {
-    users[i] = await User.findOne({id: i});
+  let point = new Array;
+  
+  let users= []
+  
 
+  for(let i = 0; i < count; i++) {
+    users[i] = await User.findOne({id:i})
   }
-
   let temp;
   temp = await User.findOne({id: 1});
   temp = {}
-  sort(users, count)
-  
 
-  let names = new Array();
-  let points = new Array();
-  let ids = new Array();
+  var k,l;
 
-  /*for(let a = 0; a < count; a++) {
-    names[a] = users[a].name
-    points[a] = users[a].point
-    ids[a] = users[a]._id
-  }*/
+  for(k = 0; k < count - 1; k++) {
+    for(l = 0; l < count - k - 1; l++) {
+      if(users[l].point > users[l + 1].point){
+      temp = users[l]
+      users[l] = users[l+1];
+      users[l+1] = temp
+
+      }
+    }
+  }
+
 
   return res.json({
-    data:users
-  }) 
-}
+    data: users
+  })
 
 
 
-async function sort(users, count)
-{
+ 
+
+
   
-  if (count == 1){
-    return;
-  }
-  for(var i = 0; i < count; i++) {
-    if(users[i] > users[i+1]){
-      temp = users[i]
-      users[i] = users[i+1];
-      users[i+1] = temp
-    }
 
-  }
-  
-  sort(users, count-1)
-    
 }
