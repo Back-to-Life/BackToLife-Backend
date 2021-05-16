@@ -6,7 +6,8 @@ const {
     createUser, 
     updateUser, 
     deleteUser,
-    sortUsers
+    sortUsers,
+    updateUrl
 
 } = require('../controllers/users')
 const {
@@ -21,7 +22,7 @@ const router = express.Router();
 router.use('/:id/lastLoginUpdate',loginRouter)
 router.use('/points', pointRouter)
 router.use('/:id/point',updatePoint);
-
+router.put('/:id/updateUrl', updateUrl)
 router
       .route('/')
       .get(getUsers)

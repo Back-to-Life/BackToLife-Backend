@@ -286,35 +286,10 @@ exports.resetPassword = async (req, res, next) => {
   }
 }
 
-exports.updateUrl = async (req, res, next) => {
-  const {oldUrl, newUrl} = req.body;
-  /*try {
-    const user = await User.findByIdAndUpdate(req.params.id, url, {
-        new: true,
-        runValidators: true
-    })
-    if(!user) {
-        return res.status(400).json({ success: false });
-    }
-    res.status(200).json({ success: true, data: user })
-} catch (err) {
-    res.status(400).json({ success: false }); 
-}
-*/
-const user = await User.findOne({imageUrl:oldUrl});
-user.imageUrl = newUrl;
-user.save();
-return res.json({
-  data: user.imageUrl
-})
 
-}
 exports.sortUsers = async (req, res, next) => {
 
   const count = await User.find().count();
-
-
-  let point = new Array;
   
   let users= []
   
@@ -323,14 +298,11 @@ exports.sortUsers = async (req, res, next) => {
     users[i] = await User.findOne({id:i})
   }
   let temp;
-  temp = await User.findOne({id: 1});
-  temp = {}
-
-  var k,l;
+  let k,l;
 
   for(k = 0; k < count - 1; k++) {
     for(l = 0; l < count - k - 1; l++) {
-      if(users[l].point > users[l + 1].point){
+      if(users[l].point < users[l + 1].point){
       temp = users[l]
       users[l] = users[l+1];
       users[l+1] = temp
@@ -338,10 +310,22 @@ exports.sortUsers = async (req, res, next) => {
       }
     }
   }
+  let ids = []
+  let names = []
+  let points = []
+  for(let i = 0; i < count; i++) {
+    ids[i] = users[i].id
+    names[i] = users[i].name
+    points[i] = users[i].point
+  }
 
 
   return res.json({
-    data: users
+    data: {
+      ids,
+      names,
+      points
+    }
   })
 
 

@@ -18,7 +18,7 @@ router.post('/forgotPassword', forgotPassword);
 router.put('/resetPassword', resetPassword);
 router.post('/removeAccount',removeAccount)
 router.post('/deleteCode', deleteRandomCode)
-router.post('/:id/updateUrl',updateUrl)
+//router.post('/:id/updateUrl',updateUrl)
 
 //router.put('/:id/updateUrl',updateUrl);
 module.exports = router; 
