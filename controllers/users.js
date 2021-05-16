@@ -67,7 +67,7 @@ exports.updateUser = async (req, res, next) => {
 
 exports.updateUrl = async (req, res, next) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body.imageUrl, {
             new: true,
             runValidators: true
         })
