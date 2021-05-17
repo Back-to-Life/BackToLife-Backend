@@ -49,10 +49,7 @@ exports.createUser = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
+        const user = await User.findByIdAndUpdate(req.params.id, req.body)
         if(!user) {
             return res.status(400).json({ success: false });
         }
@@ -65,12 +62,11 @@ exports.updateUser = async (req, res, next) => {
    
 }
 
+
+
 exports.updateUrl = async (req, res, next) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body.imageUrl, {
-            new: true,
-            runValidators: true
-        })
+        const user = await User.findByIdAndUpdate(req.params.id, req.body)
         if(!user) {
             return res.status(400).json({ success: false });
         }
@@ -80,6 +76,7 @@ exports.updateUrl = async (req, res, next) => {
     }
   
     
+   
 }
 
 

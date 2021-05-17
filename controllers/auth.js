@@ -285,8 +285,6 @@ exports.resetPassword = async (req, res, next) => {
   
   }
 }
-
-
 exports.sortUsers = async (req, res, next) => {
 
   const count = await User.find().count();
@@ -314,6 +312,9 @@ exports.sortUsers = async (req, res, next) => {
   let names = []
   let points = []
   let _ids= []
+
+  
+
   for(let i = 0; i < count; i++) {
     ids[i] = users[i].id
     names[i] = users[i].name
