@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const { isString } = require('util')
+const { StepTitle } = require('semantic-ui-react')
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -48,6 +49,10 @@ const UserSchema = new mongoose.Schema({
     loginDate : {
         type: Date,
         default: Date.now()
+    },
+    unicID: {
+        type: String
+        
     }
 })
 
@@ -76,6 +81,10 @@ UserSchema.methods.getSignedJwtToken = function () {
 
 UserSchema.methods.getId = function() {
     return this._id
+}
+UserSchema.methods.createUniqueId = function() {
+    this.unicID = this._id
+    return this.unicID
 }
 
 UserSchema.methods.deleteToken = function(token, cb){

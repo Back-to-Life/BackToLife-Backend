@@ -56,6 +56,7 @@ exports.register = async (req, res, next) => {
           })
         } else {
           const count = await User.find().count();
+
           const user = await User.create({
             name,
             email,
@@ -65,6 +66,9 @@ exports.register = async (req, res, next) => {
             randomCode: token,
             id: count
           });
+          const unicID = user.createUniqueId();
+          user.unicID = unicID;
+          user.save()
           return res.json({
             message: "Email Gönderildi",
             register: true
@@ -232,8 +236,6 @@ exports.forgotPassword = async (req, res, next) => {
   const {email} = req.body;
   req.forgotCode = forgotToken;
 
-
- 
   const data = {
     from: process.env.NODEMAILER_USER,
     to: email,
@@ -248,10 +250,7 @@ exports.forgotPassword = async (req, res, next) => {
       return res.json({
         message: error.message
       })
-
-      
     }
-  
     return res.json({
       message : "email has been send"
     })
@@ -308,21 +307,16 @@ exports.sortUsers = async (req, res, next) => {
       }
     }
   }
-  let ids = []
+  
   let names = []
   let points = []
   let _ids= []
-
-  
-
   for(let i = 0; i < count; i++) {
-    ids[i] = users[i].id
+  
     names[i] = users[i].name
     points[i] = users[i].point
     _ids[i] = users[i]._id
   }
-
-
   return res.json({
     data: {
       _ids,
@@ -332,11 +326,23 @@ exports.sortUsers = async (req, res, next) => {
     }
   })
 
-
-
- 
-
-
+}
+exports.whereAmI = async(req, res, next) => {
+  let counter = 1;
+  const id = req.body.id;
+  const user = await User.find().sort({point:-1})
   
+  for(let i = 0; i < 8; i++) {
+    if(user[i]._id == req.params.id) {
+      return res.json({
+        counter
+      })
 
+    }else{
+      counter ++ 
+    }
+  }
+  
+  
+ 
 }
