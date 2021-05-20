@@ -1,4 +1,5 @@
-const User = require ('../models/User')
+const User = require('../models/User')
+const Points = require('../models/Points')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const mailgun = require('mailgun-js')
@@ -7,8 +8,10 @@ const crypto = require('crypto')
 const nodemailer = require("nodemailer");
 const { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } = require('constants');
 
-let token = Math.floor(Math.random()*999999);
-let forgotToken = Math.floor(Math.random()*999999);
+
+
+let token = Math.floor(Math.random() * 999999);
+let forgotToken = Math.floor(Math.random() * 999999);
 
 var transporter = nodemailer.createTransport({
   service: 'hotmail',
@@ -69,6 +72,7 @@ exports.register = async (req, res, next) => {
           const unicID = user.createUniqueId();
           user.unicID = unicID;
           user.save()
+          
           return res.json({
             message: "Email Gönderildi",
             register: true
@@ -82,35 +86,35 @@ exports.register = async (req, res, next) => {
 }
 
 exports.activateAccount = async (req, res, next) => {
-  const {email, randomCodeReq, } = req.body;
+  const { email, randomCodeReq, } = req.body;
   const userEmailSearch = await User.find({ email: email });
-     console.log(randomCodeReq);
-    console.log(userEmailSearch);
-    console.log(userEmailSearch[0].login);
-    console.log(userEmailSearch[0].randomCode); 
+  console.log(randomCodeReq);
+  console.log(userEmailSearch);
+  console.log(userEmailSearch[0].login);
+  console.log(userEmailSearch[0].randomCode);
 
   if (randomCodeReq == userEmailSearch[0].randomCode && userEmailSearch[0].login == false) {
     console.log('burdayım lo');
     try {
-     // const count = await User.find().count();
-      const user = await User.findOne({email:email})
+      // const count = await User.find().count();
+      const user = await User.findOne({ email: email })
       user.randomCode = 0;
       user.save();
-   
-     res.status(200).json({
+
+      res.status(200).json({
         success: true
       });
-      
+
     } catch (error) {
       return res.status(500).json('00051', req, error.message);
     }
   }
 }
-exports.deleteRandomCode = async(req, res, next) => {
+exports.deleteRandomCode = async (req, res, next) => {
 
-  const user = await User.findOne({randomCode:0});
+  const user = await User.findOne({ randomCode: 0 });
   user.deleteCode();
-  user.save() 
+  user.save()
   res.status(200).json({
     success: true
   })
@@ -118,29 +122,29 @@ exports.deleteRandomCode = async(req, res, next) => {
 
 
 exports.removeAccount = async (req, res, next) => {
-  const {email } = req.body;
+  const { email } = req.body;
 
 
-  const user = await User.findOne({email:email})
-  if(user.randomCode && user.login == false) {
+  const user = await User.findOne({ email: email })
+  if (user.randomCode && user.login == false) {
     user.remove()
     res.status(200).json({
       success: true
     })
-  }else {
+  } else {
     res.status(400).json({
-      success:false
+      success: false
     })
   }
 
 
-  
+
 }
-  
+
 // Login User
 // POST
 exports.login = async (req, res, next) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
   // Validate emil & password
   if (!email || !password) {
@@ -162,26 +166,26 @@ exports.login = async (req, res, next) => {
     user.login = false;
     user.save();
     return next(new ErrorResponse('Invalid credentials', 401));
-    
+
   }
-  
-  
+
+
   user.login = true;
   user.save();
   const id = user.getId();
   sendTokenResponse(user, 200, res, id);
 
 
-  
-  
- }
 
- exports.logout = async (req, res, next) => {
- res.cookie('token', 'none', {
+
+}
+
+exports.logout = async (req, res, next) => {
+  res.cookie('token', 'none', {
     httpOnly: true,
   });
 
-  user = await User.findOne({login: true});
+  user = await User.findOne({ login: true });
   user.login = false;
   user.save()
 
@@ -194,10 +198,10 @@ exports.login = async (req, res, next) => {
 
 
 exports.getMe = async (req, res, next) => {
-  
-  const user = await User.findOne({login:true})
-  
-    res.status(200).json({
+
+  const user = await User.findOne({ login: true })
+
+  res.status(200).json({
     success: true,
     data: user,
   });
@@ -210,7 +214,7 @@ const sendTokenResponse = (user, statusCode, res, id) => {
   const token = user.getSignedJwtToken();
   //const user = await User.findOne({email:email})
   user.refreshToken = token;
- 
+
   console.log(user.refreshToken);
   const options = {
     expires: new Date(
@@ -233,28 +237,28 @@ const sendTokenResponse = (user, statusCode, res, id) => {
 
 // Forgot password
 exports.forgotPassword = async (req, res, next) => {
-  const {email} = req.body;
+  const { email } = req.body;
   req.forgotCode = forgotToken;
 
   const data = {
     from: process.env.NODEMAILER_USER,
     to: email,
     subject: 'Back To Life Forgot Password',
-    html:`
+    html: `
     <h2>Hello ! Please copy token that sent.</h2>
     <p>${forgotToken}</p>
     `
   };
   mg.messages().send(data, function (error, body) {
-    if(error){
+    if (error) {
       return res.json({
         message: error.message
       })
     }
     return res.json({
-      message : "email has been send"
+      message: "email has been send"
     })
- 
+
   });
 
 };
@@ -262,57 +266,57 @@ exports.forgotPassword = async (req, res, next) => {
 
 // Reset password
 exports.resetPassword = async (req, res, next) => {
-  const {forgotCode, email, password } = req.body;
-  
-  if(forgotCode){
-   if(forgotCode == forgotToken){
-     const user = await User.findOne({email: email})
+  const { forgotCode, email, password } = req.body;
+
+  if (forgotCode) {
+    if (forgotCode == forgotToken) {
+      const user = await User.findOne({ email: email })
       user.password = password;
       user.save();
       res.status(200).json({
         success: true
       })
 
-    
-   }else{
-     res.status(400).json({
-       success: false,
-       message: "Wrong code!"
-       
-     })
-   }
-  
+
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Wrong code!"
+
+      })
+    }
+
   }
 }
 exports.sortUsers = async (req, res, next) => {
 
   const count = await User.find().count();
-  
-  let users= []
-  
 
-  for(let i = 0; i < count; i++) {
-    users[i] = await User.findOne({id:i})
+  let users = []
+
+
+  for (let i = 0; i < count; i++) {
+    users[i] = await User.findOne({ id: i })
   }
   let temp;
-  let k,l;
+  let k, l;
 
-  for(k = 0; k < count - 1; k++) {
-    for(l = 0; l < count - k - 1; l++) {
-      if(users[l].point < users[l + 1].point){
-      temp = users[l]
-      users[l] = users[l+1];
-      users[l+1] = temp
+  for (k = 0; k < count - 1; k++) {
+    for (l = 0; l < count - k - 1; l++) {
+      if (users[l].point < users[l + 1].point) {
+        temp = users[l]
+        users[l] = users[l + 1];
+        users[l + 1] = temp
 
       }
     }
   }
-  
+
   let names = []
   let points = []
-  let _ids= []
-  for(let i = 0; i < count; i++) {
-  
+  let _ids = []
+  for (let i = 0; i < count; i++) {
+
     names[i] = users[i].name
     points[i] = users[i].point
     _ids[i] = users[i]._id
@@ -327,22 +331,21 @@ exports.sortUsers = async (req, res, next) => {
   })
 
 }
-exports.whereAmI = async(req, res, next) => {
+exports.whereAmI = async (req, res, next) => {
   let counter = 1;
-  const id = req.body.id;
-  const user = await User.find().sort({point:-1})
-  
-  for(let i = 0; i < 8; i++) {
-    if(user[i]._id == req.params.id) {
+  const user = await User.find().sort({ point: -1 })
+
+  for (let i = 0; i < 8; i++) {
+    if (user[i]._id == req.params.id) {
       return res.json({
         counter
       })
 
-    }else{
-      counter ++ 
+    } else {
+      counter++
     }
   }
-  
-  
- 
+
+
+
 }

@@ -49,6 +49,7 @@ exports.updatePoint = async (req, res, next) => {
         $inc: {
           point: 15
 
+
         }
       }
 
