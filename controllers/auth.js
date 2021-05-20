@@ -337,20 +337,20 @@ exports.sortUsers = async (req, res, next) => {
   let names = []
   let points = []
   let _ids = []
-  let image_urls = []
+  let imageUrls = []
   for (let i = 0; i < count; i++) {
 
     names[i] = users[i].name
     points[i] = users[i].point
     _ids[i] = users[i]._id
-    image_urls[i] = users[i].imageUrl
+    imageUrls[i] = users[i].imageUrl
   }
   return res.json({
     data: {
       _ids,
       names,
       points,
-      image_urls
+      imageUrls
 
     }
   })
