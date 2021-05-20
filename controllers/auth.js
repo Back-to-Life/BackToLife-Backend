@@ -202,7 +202,7 @@ exports.login = async (req, res, next) => {
   const sortingUser = await User.find().sort({point:-1});
   
   for(var i = 0; i< count; i ++){
-    console.log(sortingUser[i].name)
+   
    if(sortingUser[i].name != user.name){
      counter ++ ;
   }else{

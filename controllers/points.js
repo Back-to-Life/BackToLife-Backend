@@ -175,15 +175,6 @@ exports.updatePoint = async (req, res, next) => {
 }
 
 exports.mostPoint = async (req, res, next) => {
-  const glassNumber = await Points.findOne({Glass})
-  const plasticNumber = await Point.findOne({Plastic})
-  const electronicNumber = await Point.findOne({Electronic})
-  const batteryNumber = await Point.findOne({Battery})
-  const metalNumber = await Point.findOne({Metal})
-  const paperNumber = await Point.findOne({Paper})
-  const organicNumber = await Point.findOne({Organic})
-
-
-
+  
 
 }

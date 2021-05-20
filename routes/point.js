@@ -1,13 +1,7 @@
 const express = require('express');
 
 const { 
-    getPoint, 
-    getPoints, 
-    createPoint, 
-    updatePoint, 
-    deletePoint,
-    sortPoints
-
+    mostPoint
 } = require('../controllers/points')
 
 
@@ -15,7 +9,7 @@ const {
 const router = express.Router();
 
 
-  
+router.get("/mostPoint", mostPoint)  
      
 
   
