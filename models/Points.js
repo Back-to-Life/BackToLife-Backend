@@ -35,7 +35,7 @@ const PointsSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    Oragnic: {
+    Organic: {
         type: Number,
         default: 0
     },

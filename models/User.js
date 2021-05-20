@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const { isString } = require('util')
-const { StepTitle } = require('semantic-ui-react')
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,

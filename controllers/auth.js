@@ -72,7 +72,10 @@ exports.register = async (req, res, next) => {
           const unicID = user.createUniqueId();
           user.unicID = unicID;
           user.save()
-          
+          const point = await Points.create({
+            userName: name,
+            unicID: unicID
+          })
           return res.json({
             message: "Email Gönderildi",
             register: true
@@ -172,13 +175,58 @@ exports.login = async (req, res, next) => {
 
   user.login = true;
   user.save();
+
+
+
   const id = user.getId();
-  sendTokenResponse(user, 200, res, id);
+  const count = await User.find().count();
+  // create token
+  const token = user.getSignedJwtToken();
+  //const user = await User.findOne({email:email})
+
+  user.refreshToken = token;
+
+  console.log(user.refreshToken);
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  let counter = 1;
+  const sortingUser = await User.find().sort({point:-1});
+  
+  for(var i = 0; i< count; i ++){
+    console.log(sortingUser[i].name)
+   if(sortingUser[i].name != user.name){
+     counter ++ ;
+  }else{
+    break;
+  }
+ 
+
+}
+
+  res.status(200).cookie('token', token, options).json({
+    success: true,
+    token,
+    id,
+    counter
+  });
+  
 
 
+ 
 
 
 }
+
+
 
 exports.logout = async (req, res, next) => {
   res.cookie('token', 'none', {
@@ -206,32 +254,6 @@ exports.getMe = async (req, res, next) => {
     data: user,
   });
 
-};
-
-
-const sendTokenResponse = (user, statusCode, res, id) => {
-  // Create token
-  const token = user.getSignedJwtToken();
-  //const user = await User.findOne({email:email})
-  user.refreshToken = token;
-
-  console.log(user.refreshToken);
-  const options = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-    ),
-    httpOnly: true,
-  };
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
-
-  res.status(statusCode).cookie('token', token, options).json({
-    success: true,
-    token,
-    id
-  });
 };
 
 
@@ -329,23 +351,5 @@ exports.sortUsers = async (req, res, next) => {
 
     }
   })
-
-}
-exports.whereAmI = async (req, res, next) => {
-  let counter = 1;
-  const user = await User.find().sort({ point: -1 })
-
-  for (let i = 0; i < 8; i++) {
-    if (user[i]._id == req.params.id) {
-      return res.json({
-        counter
-      })
-
-    } else {
-      counter++
-    }
-  }
-
-
 
 }

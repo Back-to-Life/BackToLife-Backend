@@ -15,20 +15,7 @@ const {
 const router = express.Router();
 
 
-
-
-router
-      .route('/')
-      .get(getPoints)
-      
-      
-
-
-      router
-      .route('/:id')
-      .get(getPoint);
-
-      
+  
      
 
   

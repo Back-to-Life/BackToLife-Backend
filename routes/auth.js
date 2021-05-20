@@ -19,5 +19,4 @@ router.post('/forgotPassword', forgotPassword);
 router.put('/resetPassword', resetPassword);
 router.post('/removeAccount',removeAccount)
 router.post('/deleteCode', deleteRandomCode)
-router.get('/:id/whereAmI',whereAmI)
 module.exports = router; 
