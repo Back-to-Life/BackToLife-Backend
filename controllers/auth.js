@@ -215,6 +215,7 @@ exports.login = async (req, res, next) => {
 
 
   const id = user.getId();
+  const unicID = user.getUnicId()
   const count = await User.find().count();
   // create token
   const token = user.getSignedJwtToken();
@@ -252,7 +253,8 @@ exports.login = async (req, res, next) => {
     success: true,
     token,
     id,
-    counter
+    counter,
+    unicID
   });
   
 

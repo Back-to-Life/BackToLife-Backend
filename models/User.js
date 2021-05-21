@@ -96,7 +96,9 @@ UserSchema.methods.deleteToken = function(token, cb){
 
 })
 }
-
+UserSchema.methods.getUnicId = function() {
+   return this.unicID
+}
 // Generate and hash password token
 UserSchema.methods.getResetPasswordToken = function () {
     

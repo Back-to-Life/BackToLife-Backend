@@ -87,7 +87,7 @@ exports.updateLogin = async (req, res, next) => {
   
 
     try {
-        const login = await LoginDate.findByIdAndUpdate(req.params.id, req.body, {
+        const login = await LoginDate.findOneAndUpdate(req.params.unicID, req.body, {
             new: true,
             runValidators: true
         })
@@ -118,6 +118,9 @@ exports.deleteLogin = async (req, res, next) => {
   
     
    
+}
+exports.increaseCounter = async (req, res, next) => {
+    
 }
 
 
