@@ -2,28 +2,25 @@ const mongoose = require('mongoose')
 
 
 const LoginDateSchema = new mongoose.Schema({
-    loginDate: {
+    loginDetails: [{
+        loginDate:{
+            type: String,
+            default: "21.05.2021"
+        },
+        loginCounter: {
+            type: Number,
+            default: 0
+
+        }
+    }],
+    unicID: {
         type: String,
+        ref: "Users",
         required: true
-    },
-    loginCounter: {
-        type: Number,
-        required: true
-    },
-    points : {
-        type: Number,
-        required: true
-    },
-    pointName : {
-        type: String
+
     }
+
 })
 
-LoginDateSchema.methods.getId = function() {
-    return this._id
-}
 
-LoginDateSchema.methods.getpointName = function() {
-    return this.pointName
-}
 module.exports = mongoose.model('LoginDate', LoginDateSchema);

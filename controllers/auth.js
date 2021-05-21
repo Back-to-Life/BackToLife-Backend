@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const Points = require('../models/Points')
+const LoginDate = require('../models/LoginDate')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const mailgun = require('mailgun-js')
@@ -50,8 +51,38 @@ exports.register = async (req, res, next) => {
         because: "this is email is using bro"
       });
     } else {
+      const count = await User.find().count();
 
-      const mailSucces = transporter.sendMail(data, async function (error, info) {
+          const user = await User.create({
+            name,
+            email,
+            password,
+            login: false,
+            point: 0,
+            randomCode: token,
+            id: count
+          });
+          const unicID = user.createUniqueId();
+          user.unicID = unicID;
+          user.save()
+          const point = await Points.create({
+            userName: name,
+            unicID: unicID
+          })
+
+          const loginDate = await LoginDate.create({
+            unicID: unicID,
+            loginDetails:{}
+          })
+         
+          return res.json({
+            message: "Email Gönderildi",
+            register: true,
+            data:loginDate
+          });
+    }
+
+     /* const mailSucces = transporter.sendMail(data, async function (error, info) {
         if (error) {
           return res.json({
             message: "Mail is not goin server broken ",
@@ -76,16 +107,21 @@ exports.register = async (req, res, next) => {
             userName: name,
             unicID: unicID
           })
+          const loginDate = await LoginDate.create({})
           return res.json({
             message: "Email Gönderildi",
             register: true
           });
         }
       });
-    }
+    }*/
   } catch (e) {
-    return res.status(500).json(errorHelper('00051', req, err.message));
+    return res.status(400).json({
+      success: false
+    })
+    //return res.status(500).json(errorHelper('00051', req, err.message));
   }
+
 }
 
 exports.activateAccount = async (req, res, next) => {
