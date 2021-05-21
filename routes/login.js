@@ -5,12 +5,13 @@ const {
     updateLogin,
     getLogins,
     getLogin,
-    deleteLogin
+    deleteLogin,
+    increaseCounter
 } = require('../controllers/logins')
 
 const router = express.Router({ mergeParams: true });
 
-
+router.put("/:id/increaseCounter", increaseCounter)
 router
     .route('/')
     .get(getLogins)
