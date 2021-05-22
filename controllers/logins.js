@@ -165,7 +165,7 @@ exports.increaseCounter = async (req, res, next) => {
     
 }
 exports.showCounter = async (req, res, next) => {
-    const login = await LoginDate.findOne({unicID:req.params.id})
+    const login = await LoginDate.find({unicID:req.params.id})
     return res.json({
         success:true,
         data:login
