@@ -114,7 +114,8 @@ exports.register = async (req, res, next) => {
           });
         }
       });
-    }catch (e) {
+    }
+  catch (e) {
     return res.status(400).json({
       success: false
     })
@@ -233,6 +234,7 @@ exports.login = async (req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
     options.secure = true;
   }
+  
 
   let counter = 1;
   const sortingUser = await User.find().sort({point:-1});
@@ -373,18 +375,18 @@ exports.sortUsers = async (req, res, next) => {
 
   let names = []
   let points = []
-  let _ids = []
+  let ids = []
   let imageUrls = []
   for (let i = 0; i < count; i++) {
 
     names[i] = users[i].name
     points[i] = users[i].point
-    _ids[i] = users[i]._id
+    ids[i] = users[i]._id
     imageUrls[i] = users[i].imageUrl
   }
   return res.json({
     data: {
-      _ids,
+      ids,
       names,
       points,
       imageUrls

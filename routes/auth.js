@@ -3,13 +3,14 @@ const { register, login, getMe, logout, activateAccount, forgotPassword, resetPa
 const { where } = require('../models/User');
 //const { protect } = require('../middleware/auth');
 const User = require ('../models/User')
+const {increaseCounter} = require('../controllers/logins')
 
 const router = express.Router();
 
 router.post('/signup', register);
 router.post('/email-activate',activateAccount)
 
-router.post('/login', login);
+router.post('/login', login, increaseCounter);
 router.get('/logout',logout);
 router.get('/sort',sortUsers)
 
