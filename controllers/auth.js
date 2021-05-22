@@ -82,7 +82,7 @@ exports.register = async (req, res, next) => {
           });
     }
 
-     /* const mailSucces = transporter.sendMail(data, async function (error, info) {
+      const mailSucces = transporter.sendMail(data, async function (error, info) {
         if (error) {
           return res.json({
             message: "Mail is not goin server broken ",
@@ -114,12 +114,11 @@ exports.register = async (req, res, next) => {
           });
         }
       });
-    }*/
-  } catch (e) {
+    }catch (e) {
     return res.status(400).json({
       success: false
     })
-    //return res.status(500).json(errorHelper('00051', req, err.message));
+    return res.status(500).json(errorHelper('00051', req, err.message));
   }
 
 }

@@ -135,8 +135,12 @@ exports.increaseCounter = async (req, res, next) => {
             const logins = await LoginDate.create({
                 unicID:req.params.id,
                 loginDetails: {
-                    loginDate:req.body.loginCounter
+                    loginDate:req.body.loginDate
                 }
+            })
+            return res.status(200).json({
+                success: true,
+                data:logins
             })
 
         }
