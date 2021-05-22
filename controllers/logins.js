@@ -126,7 +126,7 @@ exports.increaseCounter = async (req, res, next) => {
 
       
     
-        const login = await LoginDate.findOneAndUpdate({$and:[{unicID:req.params.id}, {"loginDetails.loginDate":Date.now}]} ,{
+        const login = await LoginDate.findOneAndUpdate({$and:[{unicID:req.params.id}, {"loginDetails.loginDate":req.body.loginDate}]} ,{
             $inc: {
                 "loginDetails.$[].loginCounter":1
             }
@@ -135,7 +135,7 @@ exports.increaseCounter = async (req, res, next) => {
             const logins = await LoginDate.create({
                 unicID:req.params.id,
                 loginDetails: {
-                    loginDate:Date.now
+                    loginDate:req.body.loginDate
                 }
             })
             return res.status(200).json({

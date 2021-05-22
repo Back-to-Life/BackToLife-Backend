@@ -3,11 +3,8 @@ const Points = require('../models/Points')
 const LoginDate = require('../models/LoginDate')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
-const mailgun = require('mailgun-js')
-const sendEmail = require('../utils/sendEmail')
-const crypto = require('crypto')
 const nodemailer = require("nodemailer");
-const { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } = require('constants');
+
 
 
 
@@ -119,7 +116,7 @@ exports.register = async (req, res, next) => {
     return res.status(400).json({
       success: false
     })
-    return res.status(500).json(errorHelper('00051', req, err.message));
+    
   }
 
 }
