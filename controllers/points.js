@@ -183,7 +183,3 @@ exports.updatePoint = async (req, res, next) => {
 
 }
 
-exports.mostPoint = async (req, res, next) => {
-  
-
-}

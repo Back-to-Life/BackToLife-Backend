@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 
-router.get("/mostPoint", mostPoint)  
+ 
 router.get("/:id/Points", getPoint)
      
 

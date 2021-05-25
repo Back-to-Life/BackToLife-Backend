@@ -11,6 +11,7 @@ const nodemailer = require("nodemailer");
 let token = Math.floor(Math.random() * 999999);
 let forgotToken = Math.floor(Math.random() * 999999);
 
+
 var transporter = nodemailer.createTransport({
   service: 'hotmail',
   auth: {
@@ -23,10 +24,14 @@ var transporter = nodemailer.createTransport({
 // POST
 exports.register = async (req, res, next) => {
   let token = Math.floor(Math.random() * 999999);
+
+  let refreshToken;
+
   const { name, email, password } = req.body;
   // req.randomCode = token;
 
   console.log(token);
+
 
   var data = {
     from: process.env.NODEMAILER_USER,
@@ -48,36 +53,6 @@ exports.register = async (req, res, next) => {
         because: "this is email is using bro"
       });
     } else {
-      const count = await User.find().count();
-
-          const user = await User.create({
-            name,
-            email,
-            password,
-            login: false,
-            point: 0,
-            randomCode: token,
-            id: count
-          });
-          const unicID = user.createUniqueId();
-          user.unicID = unicID;
-          user.save()
-          const point = await Points.create({
-            userName: name,
-            unicID: unicID
-          })
-
-          const loginDate = await LoginDate.create({
-            unicID: unicID,
-            loginDetails:{}
-          })
-         
-          return res.json({
-            message: "Email Gönderildi",
-            register: true,
-            data:loginDate
-          });
-    }
 
       const mailSucces = transporter.sendMail(data, async function (error, info) {
         if (error) {
@@ -95,28 +70,39 @@ exports.register = async (req, res, next) => {
             login: false,
             point: 0,
             randomCode: token,
-            id: count
+            id: count,
+            refreshToken
           });
+          const rtoken = user.getSignedJwtToken();
           const unicID = user.createUniqueId();
+          user.refreshToken = rtoken;
           user.unicID = unicID;
           user.save()
+        
+  
           const point = await Points.create({
             userName: name,
             unicID: unicID
           })
-          const loginDate = await LoginDate.create({})
+          const loginDate = await LoginDate.create({
+            unicID: unicID,
+            loginDetails: {}
+          })
           return res.json({
             message: "Email Gönderildi",
-            register: true
-          });
+            register: true,
+            rtoken
+          }
+          );
         }
       });
     }
+  }
   catch (e) {
     return res.status(400).json({
       success: false
     })
-    
+
   }
 
 }
@@ -143,7 +129,7 @@ exports.activateAccount = async (req, res, next) => {
 
     } catch (error) {
       return res.status(500).json('00051', req, error.message);
-    }
+    } 
   }
 }
 exports.deleteRandomCode = async (req, res, next) => {
@@ -206,24 +192,26 @@ exports.login = async (req, res, next) => {
   }
 
 
+  
+  
   user.login = true;
-  user.save();
-
+  
 
 
   const id = user.getId();
   const unicID = user.getUnicId()
   const count = await User.find().count();
-  // create token
-  const token = user.getSignedJwtToken();
-  //const user = await User.findOne({email:email})
+  let token = user.getSignedJwtToken();
+  user.refreshToken = token;  
+  user.save()
 
-  user.refreshToken = token;
+  
+ 
 
-  console.log(user.refreshToken);
   const options = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 1 * 1 * 1 * 1
+
     ),
     httpOnly: true,
   };
@@ -231,21 +219,22 @@ exports.login = async (req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
     options.secure = true;
   }
-  
+
 
   let counter = 1;
-  const sortingUser = await User.find().sort({point:-1});
-  
-  for(var i = 0; i< count; i ++){
-   
-   if(sortingUser[i].name != user.name){
-     counter ++ ;
-  }else{
-    break;
-  }
- 
+  const sortingUser = await User.find().sort({ point: -1 });
 
-}
+  for (var i = 0; i < count; i++) {
+
+    if (sortingUser[i].name != user.name) {
+      counter++;
+    } else {
+      break;
+    }
+
+
+  }
+
 
   res.status(200).cookie('token', token, options).json({
     success: true,
@@ -254,10 +243,10 @@ exports.login = async (req, res, next) => {
     counter,
     unicID
   });
-  
 
 
- 
+
+
 
 
 }

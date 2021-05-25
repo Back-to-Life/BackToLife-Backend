@@ -41,7 +41,8 @@ const UserSchema = new mongoose.Schema({
         type: Number
     },
     imageUrl: {
-        type: String
+        type: String,
+        default: ""
     },
     refreshToken: {
         type: String
@@ -69,11 +70,11 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
   };
 UserSchema.methods.getSignedJwtToken = function () {
     return jwt.sign({ id: this._id },process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE
+        expiresIn: "1m"
     })
    
   };
-  
+
 
 UserSchema.methods.getId = function() {
     return this._id
@@ -121,5 +122,6 @@ UserSchema.methods.deleteCode = function () {
 
 })
 }
+
 
 module.exports = mongoose.model('User', UserSchema);
