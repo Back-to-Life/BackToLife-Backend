@@ -42,7 +42,7 @@ const UserSchema = new mongoose.Schema({
     },
     imageUrl: {
         type: String,
-        default: ""
+        default: "http://c12.incisozluk.com.tr/res/incisozluk//11503/6/3445216_o62f6.jpg"
     },
     refreshToken: {
         type: String
