@@ -4,6 +4,7 @@ const LoginDate = require('../models/LoginDate')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const nodemailer = require("nodemailer");
+const { findOne } = require('../models/User');
 
 
 
@@ -78,8 +79,8 @@ exports.register = async (req, res, next) => {
           user.refreshToken = rtoken;
           user.unicID = unicID;
           user.save()
-        
-  
+
+
           const point = await Points.create({
             userName: name,
             unicID: unicID
@@ -129,7 +130,7 @@ exports.activateAccount = async (req, res, next) => {
 
     } catch (error) {
       return res.status(500).json('00051', req, error.message);
-    } 
+    }
   }
 }
 exports.deleteRandomCode = async (req, res, next) => {
@@ -192,22 +193,19 @@ exports.login = async (req, res, next) => {
   }
 
 
-  
-  
+
+
   user.login = true;
-  
+
 
 
   const id = user.getId();
   const unicID = user.getUnicId()
   const count = await User.find().count();
   let token = user.getSignedJwtToken();
-  user.refreshToken = token;  
+  user.refreshToken = token;
   user.save()
-
   
- 
-
   const options = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 1 * 1 * 1 * 1

@@ -1,5 +1,5 @@
 const express = require('express')
-const { register, login, getMe, logout, activateAccount, forgotPassword, resetPassword, sortUsers, updateUrl,removeAccount, deleteRandomCode, whereAmI } = require('../controllers/auth');
+const { register, login, getMe, logout, activateAccount, forgotPassword, resetPassword, sortUsers, removeAccount, deleteRandomCode } = require('../controllers/auth');
 const { where } = require('../models/User');
 const { protect } = require('../middleware/auth');
 const User = require ('../models/User')
@@ -10,7 +10,8 @@ const router = express.Router();
 router.post('/signup', register);
 router.post('/email-activate',activateAccount)
 
-router.post('/login', protect, login);
+router.post('/login',protect,login);
+
 router.get('/logout',logout);
 router.get('/sort',sortUsers)
 

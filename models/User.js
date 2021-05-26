@@ -70,7 +70,7 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
   };
 UserSchema.methods.getSignedJwtToken = function () {
     return jwt.sign({ id: this._id },process.env.JWT_SECRET, {
-        expiresIn: "1m"
+        expiresIn: "30d"
     })
    
   };
