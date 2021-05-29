@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
     forgotCode: {
         type: Number
     },
-    id: {
+    sequence: {
         type: Number
     },
     imageUrl: {

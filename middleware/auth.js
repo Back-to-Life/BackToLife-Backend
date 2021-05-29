@@ -14,8 +14,7 @@ exports.protect = async (req, res, next) => {
     
     // Set token from Bearer token in header
     token = req.headers.authorization.split(' ')[1];
-    console.log("auth:", req.headers.authorization)
-    console.log("token:",token)
+   
     
     // Set token from cookie
   } else if (req.cookies.token) {

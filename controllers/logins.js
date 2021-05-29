@@ -124,51 +124,51 @@ exports.increaseCounter = async (req, res, next) => {
 
     try {
 
-      
-    
-        const login = await LoginDate.findOneAndUpdate({$and:[{unicID:req.params.id}, {"loginDetails.loginDate":req.body.loginDate}]} ,{
+
+
+        const login = await LoginDate.findOneAndUpdate({ $and: [{ unicID: req.params.id }, { "loginDetails.loginDate": req.body.loginDate }] }, {
             $inc: {
-                "loginDetails.$[].loginCounter":1
+                "loginDetails.$[].loginCounter": 1
             }
         })
-        if(!login) {
+        if (!login) {
             const logins = await LoginDate.create({
-                unicID:req.params.id,
+                unicID: req.params.id,
                 loginDetails: {
-                    loginDate:req.body.loginDate
+                    loginDate: req.body.loginDate
                 }
             })
             return res.status(200).json({
                 success: true,
-                data:logins
+                data: logins
             })
 
         }
-     
-        
-       
-    
-      
+
+
+
+
+
         return res.status(200).json({
             success: true,
             data: login
         })
-    
-        
+
+
     } catch (error) {
-        
+
         return res.json({
             success: false
         })
-        
+
     }
-    
+
 }
 exports.showCounter = async (req, res, next) => {
-    const login = await LoginDate.find({unicID:req.params.id})
+    const login = await LoginDate.find({ unicID: req.params.id })
     return res.json({
-        success:true,
-        data:login
+        success: true,
+        data: login
     })
 }
 

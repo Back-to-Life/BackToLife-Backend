@@ -12,9 +12,9 @@ dotenv.config({ path: './config/config.env' });
 
 // Connect to database
 connectDB();
+const app = express();
 
-
-
+app.use(cors())
 
 
 // Route files
@@ -25,7 +25,7 @@ const point = require('./routes/point')
 
 
 
-const app = express();
+
 
 // Body parser
 app.use(express.json())
@@ -39,7 +39,7 @@ app.use(logger)
 
 
 
-app.use(cors())
+
 
 
 

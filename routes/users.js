@@ -13,6 +13,7 @@ const {
 const {
     updatePoint
 } = require('../controllers/points')
+const {checkToken} = require("../controllers/auth")
 const loginRouter = require("./login")
 const pointRouter = require("./point")
 
@@ -23,6 +24,7 @@ router.use('/:id/lastLoginUpdate',loginRouter)
 router.use('/points', pointRouter)
 router.use('/:id/point',updatePoint);
 router.put('/:id/updateUrl', updateUrl)
+router.put('/:id/checkToken', checkToken)
 router
       .route('/')
       .get(getUsers)

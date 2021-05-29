@@ -71,7 +71,7 @@ exports.register = async (req, res, next) => {
             login: false,
             point: 0,
             randomCode: token,
-            id: count,
+            sequence: count,
             refreshToken
           });
           const rtoken = user.getSignedJwtToken();
@@ -190,64 +190,59 @@ exports.login = async (req, res, next) => {
     user.save();
     return next(new ErrorResponse('Invalid credentials', 401));
 
-  }
+  } else {
+    user.login = true;
 
 
 
+    const id = user.getId();
+    const unicID = user.getUnicId()
+    const count = await User.find().count();
+    let token = user.getSignedJwtToken();
+    console.log(token)
+    user.refreshToken = token;
 
-  user.login = true;
+    user.save()
 
+    const options = {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRE * 1 * 1 * 1 * 1
 
+      ),
+      httpOnly: true,
+    };
 
-  const id = user.getId();
-  const unicID = user.getUnicId()
-  const count = await User.find().count();
-  let token = user.getSignedJwtToken();
-  user.refreshToken = token;
-  user.save()
-  
-  const options = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 1 * 1 * 1 * 1
-
-    ),
-    httpOnly: true,
-  };
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
-
-
-  let counter = 1;
-  const sortingUser = await User.find().sort({ point: -1 });
-
-  for (var i = 0; i < count; i++) {
-
-    if (sortingUser[i].name != user.name) {
-      counter++;
-    } else {
-      break;
+    if (process.env.NODE_ENV === 'production') {
+      options.secure = true;
     }
 
 
+    let counter = 1;
+    const sortingUser = await User.find().sort({ point: -1 });
+
+    for (var i = 0; i < count; i++) {
+
+      if (sortingUser[i].name != user.name) {
+        counter++;
+      } else {
+        break;
+      }
+
+
+
+    }
+    res.status(200).cookie('token', token, options).json({
+      success: true,
+      token,
+      id,
+      counter,
+      unicID
+    });
+
   }
 
-
-  res.status(200).cookie('token', token, options).json({
-    success: true,
-    token,
-    id,
-    counter,
-    unicID
-  });
-
-
-
-
-
-
 }
+
 
 
 
@@ -258,12 +253,16 @@ exports.logout = async (req, res, next) => {
 
   user = await User.findOne({ login: true });
   user.login = false;
+  user.refreshToken = ""
   user.save()
+  token1 = user.refreshToken
+
 
   res.status(200).json({
     success: true,
-    data: {},
+    data: {}
   });
+
 };
 
 
@@ -278,6 +277,32 @@ exports.getMe = async (req, res, next) => {
   });
 
 };
+
+exports.checkToken = async (req, res, next) => {
+
+  const { myRefreshToken } = req.body
+  const user = await User.findOne({ refreshToken: req.body.myRefreshToken })
+  try {
+    // Verify token
+
+    const decoded = jwt.verify(myRefreshToken, process.env.JWT_SECRET);
+    console.log("verify sonuc:", decoded)
+
+    req.user = await User.findById(decoded.id);
+    res.json({
+      success: true,
+      decoded
+    })
+
+
+    next();
+  } catch (err) {
+    return next(new ErrorResponse(err));
+  }
+
+
+
+}
 
 
 // Forgot password
