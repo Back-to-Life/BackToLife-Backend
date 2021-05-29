@@ -71,7 +71,7 @@ exports.register = async (req, res, next) => {
             login: false,
             point: 0,
             randomCode: token,
-            sequence: count,
+            id: count,
             refreshToken
           });
           const rtoken = user.getSignedJwtToken();
