@@ -21,21 +21,21 @@ const pointRouter = require("./point")
 const router = express.Router();
 
 router.use('/:id/lastLoginUpdate',loginRouter)
-router.use('/points', pointRouter)
-router.use('/:id/point',updatePoint);
+//router.use('/points', pointRouter)
+//router.use('/:id/point',updatePoint);
 router.put('/:id/updateUrl', updateUrl)
 router.put('/:id/checkToken', checkToken)
 router
       .route('/')
       .get(getUsers)
-      .post(createUser);
+     // .post(createUser);
 
 
 router
       .route('/:id')
       .get(getUser)
-      .put(updateUser)
-      .delete(deleteUser);
+      //.put(updateUser)
+      //.delete(deleteUser);
 
             
 

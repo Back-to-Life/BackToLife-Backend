@@ -22,7 +22,6 @@ router
 
     router
       .route('/:id')
-      .get(getLogin)
       .delete(deleteLogin)
       .put(updateLogin);
 

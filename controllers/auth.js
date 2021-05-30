@@ -124,8 +124,13 @@ exports.activateAccount = async (req, res, next) => {
       user.randomCode = 0;
       user.save();
 
+      const id = user.unicID;
+      const refreshToken = user.refreshToken;
+
       res.status(200).json({
-        success: true
+        success: true,
+        id,
+        refreshToken
       });
 
     } catch (error) {
@@ -247,9 +252,9 @@ exports.login = async (req, res, next) => {
 
 
 exports.logout = async (req, res, next) => {
-  res.cookie('token', 'none', {
+  /*res.cookie('token', 'none', {
     httpOnly: true,
-  });
+  });*/
 
   user = await User.findOne({ login: true });
   user.login = false;
@@ -319,16 +324,19 @@ exports.forgotPassword = async (req, res, next) => {
     <p>${forgotToken}</p>
     `
   };
-  mg.messages().send(data, function (error, body) {
+  const mailSucces = transporter.sendMail(data, async function (error, info) {
     if (error) {
       return res.json({
-        message: error.message
+        message: "Mail is not goin server broken ",
+        errorMessage: error
       })
+    } else {
+      return res.json({
+        message: "Email Gönderildi",
+        
+      }
+      );
     }
-    return res.json({
-      message: "email has been send"
-    })
-
   });
 
 };
@@ -356,6 +364,25 @@ exports.resetPassword = async (req, res, next) => {
       })
     }
 
+  }
+}
+
+exports.changeName = async (req, res, next) => {
+  const { id, name, password } = req.body;
+  const user = await User.findById(id)
+  if(user.matchPassword(password)) {
+     user.name = name
+    user.save();
+    res.status(200).json({
+      success: true
+    })
+  }
+   
+  else {
+    res.status(400).json({
+      success: false,
+      message: "Please check your password!"
+    })
   }
 }
 exports.sortUsers = async (req, res, next) => {

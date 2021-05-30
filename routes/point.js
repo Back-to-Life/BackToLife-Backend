@@ -1,7 +1,6 @@
 const express = require('express');
 
-const { 
-    mostPoint, getPoint
+const { getPoint
 } = require('../controllers/points')
 
 

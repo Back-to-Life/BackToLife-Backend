@@ -1,10 +1,7 @@
-const { query } = require('express');
-const { findOneAndUpdate, findById } = require('../models/LoginDate');
 const LoginDate = require('../models/LoginDate')
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
-const Points = require('../models/Points');
-const { login } = require('./auth');
+
 
 
 
@@ -23,33 +20,6 @@ exports.getLogins = async (req, res, next) => {
 }
 
 
-// GET  
-exports.getLogin = async (req, res, next) => {
-    try {
-
-
-
-        const login = await LoginDate.findByIdAndUpdate(
-            req.params.id,
-            {
-                $inc: {
-                    loginCounter: 1
-                }
-            }
-        );
-
-
-
-
-
-
-
-        res.status(200).json({ success: true })
-    } catch (err) {
-        res.status(400).json({ success: false });
-
-    }
-}
 
 
 // POST
