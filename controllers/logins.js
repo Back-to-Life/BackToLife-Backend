@@ -24,7 +24,7 @@ exports.getLogins = async (req, res, next) => {
 
 // POST
 
-exports.createLogin = async (req, res, next) => {
+/*exports.createLogin = async (req, res, next) => {
     req.body.user = req.params.id;
     const user = await User.findById(req.params.id);
 
@@ -49,7 +49,7 @@ exports.createLogin = async (req, res, next) => {
 
 
 
-}
+}*/
 
 
 // PUT
@@ -76,20 +76,27 @@ exports.updateLogin = async (req, res, next) => {
 
 // DELETE
 
-exports.deleteLogin = async (req, res, next) => {
+/*exports.deleteLogin = async (req, res, next) => {
     try {
         const login = await LoginDate.findByIdAndDelete(req.params.id)
         if (!login) {
             return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true, data: {} })
+
+       
+
+
+
+
+
     } catch (err) {
         res.status(400).json({ success: false });
     }
 
 
 
-}
+}*/
 exports.increaseCounter = async (req, res, next) => {
 
     try {

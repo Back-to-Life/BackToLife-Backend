@@ -7,23 +7,27 @@ const {
     getLogin,
     deleteLogin,
     increaseCounter,
-    showCounter
-} = require('../controllers/logins')
+    showCounter,
+    updateDate
+} = require('../controllers/logins');
+const { update } = require('../models/User');
 
 const router = express.Router({ mergeParams: true });
 
 router.put("/:id/increaseCounter", increaseCounter)
 router.get("/:id/showCounter", showCounter)
+
 router
     .route('/')
     .get(getLogins)
-    .post(createLogin);
+    //.post(createLogin);
 
 
     router
       .route('/:id')
-      .delete(deleteLogin)
+      //.delete(deleteLogin)
       .put(updateLogin);
+    
 
 
    
