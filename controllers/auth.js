@@ -292,6 +292,7 @@ exports.checkToken = async (req, res, next) => {
 
     const decoded = jwt.verify(myRefreshToken, process.env.JWT_SECRET);
     console.log("verify sonuc:", decoded)
+  
 
     req.user = await User.findById(decoded.id);
     res.json({
@@ -333,7 +334,7 @@ exports.forgotPassword = async (req, res, next) => {
     } else {
       return res.json({
         message: "Email Gönderildi",
-        
+
       }
       );
     }
@@ -367,23 +368,48 @@ exports.resetPassword = async (req, res, next) => {
   }
 }
 
-exports.changeName = async (req, res, next) => {
-  const { id, name, password } = req.body;
-  const user = await User.findById(id)
-  if(user.matchPassword(password)) {
-     user.name = name
-    user.save();
-    res.status(200).json({
-      success: true
-    })
-  }
-   
-  else {
+exports.accountSettings = async (req, res, next) => {
+  const { name, email, password } = req.body;
+  const user = await User.findById(req.params.id)
+  const isMatch = await user.matchPassword(password);
+ 
+  if (isMatch) {
+  
+
+    if(email && name) {
+      user.email=email;
+      user.name = name;
+      user.save()
+      res.status(200).json({
+        success: true
+      })
+
+
+    }
+    if(email && !name) {
+      user.email = email;
+      user.save();
+      res.status(200).json({
+        success: true
+      })
+    }
+    if(!email && name) {
+      user.name = name;
+      user.save()
+      res.status(200).json({
+        success: true
+      })
+    }
+    
+    
+  }else {
     res.status(400).json({
       success: false,
       message: "Please check your password!"
     })
   }
+
+  
 }
 exports.sortUsers = async (req, res, next) => {
 
