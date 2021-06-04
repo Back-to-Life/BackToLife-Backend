@@ -111,7 +111,6 @@ exports.activateAccount = async (req, res, next) => {
   console.log(userEmailSearch[0].randomCode);
 
   if (randomCodeReq == userEmailSearch[0].randomCode && userEmailSearch[0].login == false) {
-    console.log('burdayım lo');
     try {
       // const count = await User.find().count();
       const user = await User.findOne({ email: email })
