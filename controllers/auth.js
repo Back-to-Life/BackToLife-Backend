@@ -4,12 +4,7 @@ const LoginDate = require('../models/LoginDate')
 const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const nodemailer = require("nodemailer");
-const { findOne } = require('../models/User');
 
-
-
-
-let token = Math.floor(Math.random() * 999999);
 let forgotToken = Math.floor(Math.random() * 999999);
 
 
@@ -93,8 +88,7 @@ exports.register = async (req, res, next) => {
             message: "Email Gönderildi",
             register: true,
             rtoken
-          }
-          );
+          });
         }
       });
     }
@@ -252,9 +246,9 @@ exports.login = async (req, res, next) => {
 
 
 exports.logout = async (req, res, next) => {
-  /*res.cookie('token', 'none', {
+  res.cookie('token', 'none', {
     httpOnly: true,
-  });*/
+  });
 
   user = await User.findOne({ login: true });
   user.login = false;
@@ -292,7 +286,7 @@ exports.checkToken = async (req, res, next) => {
 
     const decoded = jwt.verify(myRefreshToken, process.env.JWT_SECRET);
     console.log("verify sonuc:", decoded)
-  
+
 
     req.user = await User.findById(decoded.id);
     res.json({
@@ -372,12 +366,12 @@ exports.accountSettings = async (req, res, next) => {
   const { name, email, password } = req.body;
   const user = await User.findById(req.params.id)
   const isMatch = await user.matchPassword(password);
- 
-  if (isMatch) {
-  
 
-    if(email && name) {
-      user.email=email;
+  if (isMatch) {
+
+
+    if (email && name) {
+      user.email = email;
       user.name = name;
       user.save()
       res.status(200).json({
@@ -386,30 +380,30 @@ exports.accountSettings = async (req, res, next) => {
 
 
     }
-    if(email && !name) {
+    if (email && !name) {
       user.email = email;
       user.save();
       res.status(200).json({
         success: true
       })
     }
-    if(!email && name) {
+    if (!email && name) {
       user.name = name;
       user.save()
       res.status(200).json({
         success: true
       })
     }
-    
-    
-  }else {
+
+
+  } else {
     res.status(400).json({
       success: false,
       message: "Please check your password!"
     })
   }
 
-  
+
 }
 exports.sortUsers = async (req, res, next) => {
 

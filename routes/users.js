@@ -22,7 +22,7 @@ const router = express.Router();
 
 router.use('/:id/lastLoginUpdate',loginRouter)
 //router.use('/points', pointRouter)
-//router.use('/:id/point',updatePoint);
+router.use('/:id/point',updatePoint);
 router.put('/:id/updateUrl', updateUrl)
 router.put('/:id/checkToken', checkToken)
 router

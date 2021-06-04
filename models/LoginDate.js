@@ -20,27 +20,8 @@ const LoginDateSchema = new mongoose.Schema({
         ref: "Users",
         required: true
 
-    },
-    Date: {
-        type: Date,
-        default: Date.now
     }
-
 })
-
-/*LoginDateSchema.methods.deleteLogins = async function (givenDate) {
-    const login = this;
-
-    console.log(givenDate);
-    console.log(login.loginDetails.loginDate);
-
-    if(givenDate[4] - this.loginDetails.loginDate[4] == 0) {
-        login.delete(this)
-    }
-
-   
-
-};*/
 
 
 

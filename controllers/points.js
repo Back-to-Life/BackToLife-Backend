@@ -5,14 +5,14 @@ const Points = require('../models/Points');
 
 
 // GET
-exports.getPoint = async(req, res, next) => {
+/*exports.getPoint = async(req, res, next) => {
   const points = await Points.findOne({unicID:req.params.id})
   return res.json({
     success: true,
     data: points
 
   })
-}
+}*/
 
 
 exports.updatePoint = async (req, res, next) => {
