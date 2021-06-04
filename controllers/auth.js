@@ -87,6 +87,7 @@ exports.register = async (req, res, next) => {
           return res.json({
             message: "Email Gönderildi",
             register: true,
+            unicID,
             rtoken
           });
         }
