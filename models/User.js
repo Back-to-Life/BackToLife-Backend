@@ -75,6 +75,17 @@ UserSchema.methods.getSignedJwtToken = function () {
     })
 
 };
+UserSchema.methods.deleteForgotToken = function (forgotCode) {
+    var user = this;
+
+    user.update({ $unset: { forgotCode} }, function (err, user) {
+        if (err) return err;
+        else {
+            return user
+        }
+
+    })
+}
 
 
 UserSchema.methods.getId = function () {
