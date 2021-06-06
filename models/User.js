@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
-const { isString } = require('util')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -83,11 +82,8 @@ UserSchema.methods.deleteForgotToken = function (forgotCode) {
         else {
             return user
         }
-
     })
 }
-
-
 UserSchema.methods.getId = function () {
     return this._id
 }

@@ -5,8 +5,6 @@ const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const nodemailer = require("nodemailer");
 
-let forgotToken = Math.floor(Math.random() * 999999);
-
 
 var transporter = nodemailer.createTransport({
   service: 'hotmail',
@@ -24,11 +22,8 @@ exports.register = async (req, res, next) => {
   let refreshToken;
 
   const { name, email, password } = req.body;
-  // req.randomCode = token;
 
   console.log(token);
-
-
   var data = {
     from: process.env.NODEMAILER_USER,
     to: email,
@@ -38,8 +33,6 @@ exports.register = async (req, res, next) => {
     <h1>${token}</h1>
     `
   };
-
-
   try {
     const userExist = await User.exists({ email })
     console.log(userExist);
@@ -158,9 +151,6 @@ exports.removeAccount = async (req, res, next) => {
       success: false
     })
   }
-
-
-
 }
 
 // Login User
@@ -191,8 +181,6 @@ exports.login = async (req, res, next) => {
 
   } else {
     user.login = true;
-
-
 
     const id = user.getId();
     const unicID = user.getUnicId()
@@ -226,9 +214,6 @@ exports.login = async (req, res, next) => {
       } else {
         break;
       }
-
-
-
     }
     res.status(200).cookie('token', token, options).json({
       success: true,
@@ -293,14 +278,10 @@ exports.checkToken = async (req, res, next) => {
       success: true,
       decoded
     })
-
-
     next();
   } catch (err) {
     return next(new ErrorResponse(err));
   }
-
-
 
 }
 
@@ -310,7 +291,7 @@ exports.forgotPassword = async (req, res, next) => {
   const { email } = req.body;
   let forgotToken = Math.floor(Math.random() * 999999);
 
-  const user = await User.findOne({email:email})
+  const user = await User.findOne({ email: email })
 
   user.forgotCode = forgotToken;
   user.save();
@@ -332,7 +313,7 @@ exports.forgotPassword = async (req, res, next) => {
       })
     } else {
       return res.json({
-        message: "Email Gönderildi",
+        success: true,
 
       }
       );
@@ -341,12 +322,11 @@ exports.forgotPassword = async (req, res, next) => {
 
 };
 
-
 // Reset password
 exports.resetPassword = async (req, res, next) => {
   const { forgotCode, email, password } = req.body;
 
-  const user = await User.findOne({email:email})
+  const user = await User.findOne({ email: email })
 
   if (forgotCode) {
     if (forgotCode == user.forgotCode) {
