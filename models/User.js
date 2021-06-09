@@ -50,6 +50,9 @@ const UserSchema = new mongoose.Schema({
     unicID: {
         type: String
 
+    },
+    forgotCode: {
+        type: Number
     }
 })
 
@@ -91,6 +94,17 @@ UserSchema.methods.deleteToken = function (token, cb) {
     user.update({ $unset: { token: 1 } }, function (err, user) {
         if (err) return cb(err);
         cb(null, user);
+
+    })
+}
+UserSchema.methods.deleteForgotToken = function (forgotCode) {
+    var user = this;
+
+    user.update({ $unset: { forgotCode} }, function (err, user) {
+        if (err) return err;
+        else {
+            return user
+        }
 
     })
 }

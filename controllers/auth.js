@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const ErrorResponse = require('../utils/errorResponse');
 const nodemailer = require("nodemailer");
 
-let forgotToken = Math.floor(Math.random() * 999999);
+
 
 
 var transporter = nodemailer.createTransport({
@@ -308,7 +308,12 @@ exports.checkToken = async (req, res, next) => {
 // Forgot password
 exports.forgotPassword = async (req, res, next) => {
   const { email } = req.body;
-  req.forgotCode = forgotToken;
+  let forgotToken = Math.floor(Math.random() * 999999);
+
+  const user = await User.findOne({email:email})
+
+  user.forgotCode = forgotToken;
+  user.save();
 
   const data = {
     from: process.env.NODEMAILER_USER,
@@ -341,10 +346,13 @@ exports.forgotPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   const { forgotCode, email, password } = req.body;
 
+  const user = await User.findOne({email:email})
+
   if (forgotCode) {
-    if (forgotCode == forgotToken) {
+    if (forgotCode == user.forgotCode) {
       const user = await User.findOne({ email: email })
       user.password = password;
+      user.deleteForgotToken(forgotCode);
       user.save();
       res.status(200).json({
         success: true
