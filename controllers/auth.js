@@ -2,7 +2,7 @@ const User = require('../models/User')
 const Points = require('../models/Points')
 const LoginDate = require('../models/LoginDate')
 const jwt = require('jsonwebtoken')
-const ErrorResponse = require('../utils/errorResponse');
+const ErrorResponse = require('../utils/ErrorResponse');
 const nodemailer = require("nodemailer");
 
 
