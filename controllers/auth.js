@@ -307,38 +307,48 @@ exports.checkToken = async (req, res, next) => {
 
 // Forgot password
 exports.forgotPassword = async (req, res, next) => {
-  const { email } = req.body;
-  let forgotToken = Math.floor(Math.random() * 999999);
 
-  const user = await User.findOne({email:email})
+  const { email } = req.body
+  const user = await User.findOne({ email: email })
 
-  user.forgotCode = forgotToken;
-  user.save();
 
-  const data = {
-    from: process.env.NODEMAILER_USER,
-    to: email,
-    subject: 'Back To Life Forgot Password',
-    html: `
-    <h2>Hello ! Please copy token that sent.</h2>
-    <p>${forgotToken}</p>
-    `
-  };
-  const mailSucces = transporter.sendMail(data, async function (error, info) {
-    if (error) {
-      return res.json({
-        message: "Mail is not goin server broken ",
-        errorMessage: error
-      })
-    } else {
-      return res.json({
-        message: "Email Gönderildi",
+  if (user == null) {
+    res.status(404).json({
+      message: "User not found!"
+    });
+  } else {
+    let forgotToken = Math.floor(Math.random() * 999999);
+    user.forgotCode = forgotToken;
+    user.save();
+    console.log(forgotToken);
+    const data = {
+      from: process.env.NODEMAILER_USER,
+      to: email,
+      subject: 'Back To Life Forgot Password',
+      html: `
+      <h2>Hello ! Please copy token that sent.</h2>
+      <p>${forgotToken}</p>
+      `
+
+
+    };
+    const mailSucces = transporter.sendMail(data, async function (error, info) {
+      if (error) {
+        return res.json({
+          message: "Mail is not goin server broken ",
+          errorMessage: error
+        })
+      } else {
+        return res.json({
+          // message: "Email Gönderildi",
+          success: true
+
+        }
+        );
 
       }
-      );
-    }
-  });
-
+    });
+  }
 };
 
 
@@ -346,7 +356,9 @@ exports.forgotPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   const { forgotCode, email, password } = req.body;
 
+
   const user = await User.findOne({email:email})
+
 
   if (forgotCode) {
     if (forgotCode == user.forgotCode) {
@@ -369,6 +381,8 @@ exports.resetPassword = async (req, res, next) => {
 
   }
 }
+
+
 
 exports.accountSettings = async (req, res, next) => {
   const { name, email, password } = req.body;
