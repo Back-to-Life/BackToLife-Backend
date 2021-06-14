@@ -19,7 +19,7 @@ exports.updatePoint = async (req, res, next) => {
   pointName = req.body.pointName
 
 
-  if (pointName == "Glass") {
+  if (pointName == "glass") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -36,13 +36,13 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Glass: 1
+          glass: 1
         }
       }
     )
 
   }
-  if (pointName == "Plastic") {
+  if (pointName == "plastic") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -59,12 +59,12 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Plastic: 1
+          plastic: 1
         }
       }
     )
   }
-  if (pointName == "Electronic") {
+  if (pointName == "electronic") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -81,12 +81,12 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Electronic: 1
+          electronic: 1
         }
       }
     )
   }
-  if (pointName == "Battery") {
+  if (pointName == "battery") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -103,12 +103,12 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Battery: 1
+          battery: 1
         }
       }
     )
   }
-  if (pointName == "Metal") {
+  if (pointName == "metal") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -125,12 +125,12 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Metal: 1
+          metal: 1
         }
       }
     )
   }
-  if (pointName == "Organic") {
+  if (pointName == "organic") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -147,12 +147,12 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Organic: 1
+          organic: 1
         }
       }
     )
   }
-  if (pointName == "Paper") {
+  if (pointName == "paper") {
     const user = await User.findByIdAndUpdate(
 
       req.params.id,
@@ -169,7 +169,7 @@ exports.updatePoint = async (req, res, next) => {
       user.unicID,
       {
         $inc: {
-          Paper: 1
+          paper: 1
         }
       }
     )
