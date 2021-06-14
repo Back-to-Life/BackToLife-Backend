@@ -249,12 +249,15 @@ exports.logout = async (req, res, next) => {
   res.cookie('token', 'none', {
     httpOnly: true,
   });
+  
 
-  user = await User.findOne({ login: true });
+  user = await User.findOne({ unicID: req.params.id });
   user.login = false;
   user.refreshToken = ""
   user.save()
   token1 = user.refreshToken
+  
+ 
 
 
   res.status(200).json({

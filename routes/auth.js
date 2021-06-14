@@ -11,7 +11,7 @@ router.post('/email-activate',activateAccount)
 
 router.post('/login',login);
 
-router.get('/logout',logout);
+router.get('/:id/logout',logout);
 router.get('/sort',sortUsers)
 
 
