@@ -18,7 +18,6 @@ exports.getPoint = async(req, res, next) => {
 exports.updatePoint = async (req, res, next) => {
   pointName = req.body.pointName
 
-
   if (pointName == "glass") {
     const user = await User.findByIdAndUpdate(
 
@@ -41,6 +40,7 @@ exports.updatePoint = async (req, res, next) => {
       }
     )
 
+    res.status(200).json({ success: true })
   }
   if (pointName == "plastic") {
     const user = await User.findByIdAndUpdate(
@@ -63,6 +63,7 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
   }
   if (pointName == "electronic") {
     const user = await User.findByIdAndUpdate(
@@ -85,6 +86,7 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
   }
   if (pointName == "battery") {
     const user = await User.findByIdAndUpdate(
@@ -107,6 +109,7 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
   }
   if (pointName == "metal") {
     const user = await User.findByIdAndUpdate(
@@ -129,6 +132,7 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
   }
   if (pointName == "organic") {
     const user = await User.findByIdAndUpdate(
@@ -151,6 +155,7 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
   }
   if (pointName == "paper") {
     const user = await User.findByIdAndUpdate(
@@ -173,13 +178,16 @@ exports.updatePoint = async (req, res, next) => {
         }
       }
     )
+    res.status(200).json({ success: true })
+  }else {
+    res.status(400).json({ success: false })
   }
 
 
 
 
 
-  res.status(200).json({ success: true })
+  
 
 }
 
