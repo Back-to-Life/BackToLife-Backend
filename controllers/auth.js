@@ -388,12 +388,8 @@ exports.resetPassword = async (req, res, next) => {
 
 
 exports.accountSettings = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email } = req.body;
   const user = await User.findById(req.params.id)
-  const isMatch = await user.matchPassword(password);
-
-  if (isMatch) {
-
 
     if (email && name) {
       user.email = email;
@@ -421,12 +417,7 @@ exports.accountSettings = async (req, res, next) => {
     }
 
 
-  } else {
-    res.status(400).json({
-      success: false,
-      message: "Please check your password!"
-    })
-  }
+
 
 
 }
