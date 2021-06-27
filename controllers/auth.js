@@ -63,7 +63,7 @@ exports.register = async (req, res, next) => {
             name,
             email,
             password,
-            login: false,
+            login: true,
             point: 0,
             randomCode: token,
             id: count,
