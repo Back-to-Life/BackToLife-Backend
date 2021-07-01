@@ -286,7 +286,7 @@ exports.checkToken = async (req, res, next) => {
   try {
     // Verify token
 
-    const decoded = jwt.verify(myRefreshToken, process.env.JWT_SECRET);
+    const decoded = jwt.verify(myRefreshToken , process.env.JWT_SECRET);
     console.log("verify sonuc:", decoded)
     const user = await User.findById(decoded.id);
 
