@@ -249,15 +249,15 @@ exports.logout = async (req, res, next) => {
   res.cookie('token', 'none', {
     httpOnly: true,
   });
-  
+
 
   user = await User.findOne({ unicID: req.params.id });
   user.login = false;
   user.refreshToken = ""
   user.save()
   token1 = user.refreshToken
-  
- 
+
+
 
 
   res.status(200).json({
@@ -283,19 +283,29 @@ exports.getMe = async (req, res, next) => {
 exports.checkToken = async (req, res, next) => {
 
   const { myRefreshToken } = req.body
-  const user = await User.findOne({ refreshToken: req.body.myRefreshToken })
   try {
     // Verify token
 
     const decoded = jwt.verify(myRefreshToken, process.env.JWT_SECRET);
     console.log("verify sonuc:", decoded)
+    const user = await User.findById(decoded.id);
+
+    if (user.refreshToken == myRefreshToken) {
+      
+      res.json({
+        success: true,
+        decoded,
+        user
+      })
+    }
+    else{
+      return res.json({
+        success: false
+      })
+    }
 
 
-    req.user = await User.findById(decoded.id);
-    res.json({
-      success: true,
-      decoded
-    })
+
 
 
     next();
@@ -360,7 +370,7 @@ exports.resetPassword = async (req, res, next) => {
   const { forgotCode, email, password } = req.body;
 
 
-  const user = await User.findOne({email:email})
+  const user = await User.findOne({ email: email })
 
 
   if (forgotCode) {
@@ -391,30 +401,30 @@ exports.accountSettings = async (req, res, next) => {
   const { name, email } = req.body;
   const user = await User.findById(req.params.id)
 
-    if (email && name) {
-      user.email = email;
-      user.name = name;
-      user.save()
-      res.status(200).json({
-        success: true
-      })
+  if (email && name) {
+    user.email = email;
+    user.name = name;
+    user.save()
+    res.status(200).json({
+      success: true
+    })
 
 
-    }
-    if (email && !name) {
-      user.email = email;
-      user.save();
-      res.status(200).json({
-        success: true
-      })
-    }
-    if (!email && name) {
-      user.name = name;
-      user.save()
-      res.status(200).json({
-        success: true
-      })
-    }
+  }
+  if (email && !name) {
+    user.email = email;
+    user.save();
+    res.status(200).json({
+      success: true
+    })
+  }
+  if (!email && name) {
+    user.name = name;
+    user.save()
+    res.status(200).json({
+      success: true
+    })
+  }
 
 
 
