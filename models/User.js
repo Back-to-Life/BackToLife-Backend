@@ -119,7 +119,7 @@ UserSchema.methods.getUnicId = function () {
     return this.unicID
 }
 // Generate and hash password token
-UserSchema.methods.getResetPasswordToken = function () {
+/*UserSchema.methods.getResetPasswordToken = function () {
 
     const resetToken = crypto.randomBytes(20).toString('hex');
 
@@ -134,7 +134,7 @@ UserSchema.methods.getResetPasswordToken = function () {
 
     return resetToken;
 }
-
+*/
 UserSchema.methods.deleteCode = function () {
     var user = this;
 

@@ -339,8 +339,8 @@ exports.forgotPassword = async (req, res, next) => {
       to: email,
       subject: 'Back To Life Forgot Password',
       html: `
-      <h2>Hello ! Please copy token that sent.</h2>
-      <p>${forgotToken}</p>
+      <h1>Hello ! Please copy token that sent.</h1>
+      <h1>${forgotToken}</h1>
       `
 
 
