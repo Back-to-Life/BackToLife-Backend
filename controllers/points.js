@@ -1,5 +1,3 @@
-const ErrorResponse = require('../utils/ErrorResponse');
-const LoginDate = require('../models/LoginDate')
 const User = require('../models/User');
 const Points = require('../models/Points');
 
@@ -34,11 +32,11 @@ exports.updatePoint = async (req, res, next) => {
 
 
       );
-      console.log(user.unicID)
-    
-       const point = await Points.findOneAndUpdate(
-       {
-         unicID:user.unicID
+
+
+      const point = await Points.findOneAndUpdate(
+        {
+          unicID: user.unicID
         },
         {
           $inc: {
@@ -47,11 +45,11 @@ exports.updatePoint = async (req, res, next) => {
         }
       ).then(res.status(200).json({ success: true }))
 
-      
+
     }
     if (pointName == "plastic") {
       const user = await User.findByIdAndUpdate(
-        
+
         req.params.id,
         {
           $inc: {
@@ -64,8 +62,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Plastic: 1
@@ -89,8 +87,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Electronic: 1
@@ -114,8 +112,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Battery: 1
@@ -139,8 +137,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Metal: 1
@@ -164,8 +162,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Organic: 1
@@ -189,8 +187,8 @@ exports.updatePoint = async (req, res, next) => {
       );
       const point = await Points.findOneAndUpdate(
         {
-          unicID:user.unicID
-         },
+          unicID: user.unicID
+        },
         {
           $inc: {
             Paper: 1

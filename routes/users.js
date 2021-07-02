@@ -1,10 +1,10 @@
 const express = require('express');
 
-const { 
-    getUser, 
-    getUsers, 
-    createUser, 
-    updateUser, 
+const {
+    getUser,
+    getUsers,
+    createUser,
+    updateUser,
     deleteUser,
     sortUsers,
     updateUrl
@@ -13,31 +13,29 @@ const {
 const {
     updatePoint
 } = require('../controllers/points')
-const {checkToken} = require("../controllers/auth")
+const { checkToken } = require("../controllers/auth")
 const loginRouter = require("./login")
 const pointRouter = require("./point")
 
 
 const router = express.Router();
 
-router.use('/:id/lastLoginUpdate',loginRouter)
-//router.use('/points', pointRouter)
-router.use('/:id/point',updatePoint);
+router.use('/:id/lastLoginUpdate', loginRouter)
+router.use('/:id/point', updatePoint);
 router.put('/:id/updateUrl', updateUrl)
 router.put('/:id/checkToken', checkToken)
 router
-      .route('/')
-      .get(getUsers)
-     // .post(createUser);
+    .route('/')
+    .get(getUsers)
+
 
 
 router
-      .route('/:id')
-      .get(getUser)
-      //.put(updateUser)
-      //.delete(deleteUser);
+    .route('/:id')
+    .get(getUser)
 
-            
 
-  
+
+
+
 module.exports = router;

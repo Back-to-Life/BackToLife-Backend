@@ -1,16 +1,12 @@
 const express = require('express');
 
-const { 
-    createLogin,
+const {
     updateLogin,
     getLogins,
-    getLogin,
-    deleteLogin,
     increaseCounter,
-    showCounter,
-    updateDate
+    showCounter
 } = require('../controllers/logins');
-const { update } = require('../models/User');
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -20,12 +16,11 @@ router.get("/:id/showCounter", showCounter)
 router
     .route('/')
     .get(getLogins)
-    //.post(createLogin);
+   
 
 
     router
       .route('/:id')
-      //.delete(deleteLogin)
       .put(updateLogin);
     
 
